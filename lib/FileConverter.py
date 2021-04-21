@@ -1,3 +1,4 @@
+  
 # Python imports
 import json
 import shutil
@@ -40,6 +41,7 @@ class FileConverter():
             self.progress_bar_.update_progress_bar((all_uploads.index(file) + 1)*.01 + current_percent_fill)
             if 'bin' in file:
                 id_num, ext = file.split('.')
+                fsize = os.stat(self.file_source + '/' + file).st_size
 
                 #try:
                # Look for matching json file (containing metadata)
@@ -80,7 +82,10 @@ class FileConverter():
                     with open(export_fpath, 'w') as outfile:
                         json.dump(mdata_dict, outfile)
                 except:
-                    self.console_box_.text = "One of your test files can't be processed. Mouthpiece ejected too soon?"
+                    if fsize > 20000:
+                        self.console_box_.text = "No breath sample detected in test."
+                    else:
+                        self.console_box_.text = "One of your test files can't be processed. Mouthpiece ejected too soon?"
                     shutil.move(self.file_source + '/'+ file, self.unpaired_file_dir + '/' + file)
                     time.sleep(3)
                     continue
