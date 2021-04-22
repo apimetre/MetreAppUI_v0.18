@@ -39,6 +39,7 @@ from app_single_launch import AppSingleLaunch
 
 APP_VERSION = 'v0.18'
 
+
 class MainView(ui.View):
     def __init__(self, app: AppSingleLaunch):
         self.app = app
@@ -98,6 +99,16 @@ class MainView2(ui.View):
         self.vlabel = self.v['vlabel']
         
         self.cwd = os.getcwd()
+        print(self.cwd)
+        root_dir, metre_dir = self.cwd.split('MetreiOS')
+        print(root_dir)
+        check_path = root_dir + 'site-packages/single_launch.lock'
+        if os.path.exists(check_path):
+        	continue
+        else:
+        	shutil.copy(self.cwd + '/resources/single_launch.lock', check_path )
+        	print('moved')
+
 
         self.start_button.alpha = 0.25
         on_main_thread(console.set_idle_timer_disabled)(True)
