@@ -1,4 +1,4 @@
-# Python imports
+## Python imports
 import os
 import requests
 import shutil
@@ -43,9 +43,11 @@ class MainView(ui.View):
         self.app = app
         self.name = "MetreAce Home"
         self.flex = 'WH'
+        self.tint_color = '#494949'
         self.background_color = 'black'
         
         # Setup of UI Features
+        
         self.v = ui.load_view('mainview')
         self.v.frame = self.bounds
         self.v.flex = 'WH'
@@ -55,13 +57,13 @@ class MainView(ui.View):
         
         # Console
         self.app_console = self.v['console']
-        self.app_console.alpha = 0
+        self.app_conosole.alpha = 0
        
         
         # Ble connection
         self.start_button = self.v['start_button']
         self.ble_icon = self.v['ble_icon']
-        self.ble_status_icon = self.v['ble_status_icon']
+        self.ble_status_icon = v['ble_status_icon']
         
                 
         # Status bar
@@ -70,8 +72,6 @@ class MainView(ui.View):
         self.fillbar.x = 31.1
         self.fullbar = self.fillbar_outline.width
         
-        # Version Label
-        self.vlabel = self.v['vlabel']
         self.cwd = os.getcwd()
 
         self.start_button.alpha = 0.25
@@ -85,12 +85,33 @@ class MainView(ui.View):
         self.vbutton.action = self.popUpView
         
         self.start_button.alpha = 1
-        self.start_button.action = self.bleStatus
+        self.start_button.action = bleStatus
         # self.app_console.text = 'Once MetreAce reads "UPLOAD rdy", push CONNECT (above) to initiate data transfer from MetreAce'
         # self.ble_status.text = 'CONNECT'
         ble_icon_path = 'images/ble_off.png'
         self.ble_status_icon.image = ui.Image.named(ble_icon_path)
         self.files_to_upload = os.listdir('data_files/converted_files/')
+
+
+        self.add_subview(v)
+        
+        # Implementation of navigation view/mainview
+        self.l = self.create_l_buttonItems('Settings','|','Summaries','|', 'Help')
+        self.left_button_items = self.l
+
+        if len(self.files_to_upload) >=2:
+            self.start_button.alpha = 0.5
+            self.ble_status.text = ''
+            self.main()
+        
+            
+        else:
+            self.app_console.text = 'Once MetreAce reads "UPLOAD rdy", push CONNECT (above) to initiate data transfer from MetreAce'
+            self.ble_status.text = 'CONNECT'
+                
+        
+        
+        
         
     def will_close(self) -> None:
         self.app.will_close()
@@ -112,7 +133,7 @@ class MainView(ui.View):
                     ble_delegate = BleDelegate(settings_page, s_table, d_table, self.cwd)
                     
                 if sender.title =='Help':
-                    help_page = pushed_view['toolbarview']
+                    help_page = pushed_view['toolbarview'
                     hview = ui.load_view('toolbar')
                     self.add_subview(hview)
                     inst_page = hview['online_instructions']
@@ -363,6 +384,7 @@ class MainView(ui.View):
 if __name__ == '__main__':
     app = AppSingleLaunch("MetreAce Home")
     if not app.is_active():
-        view = MainView(app)
+        view = ui.NavigationView(app)
+        view.tint_color =  '#494949'                                   
         app.will_present(view)
         view.present()
