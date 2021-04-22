@@ -103,7 +103,9 @@ class MainView2(ui.View):
         root_dir, metre_dir = self.cwd.split('MetreiOS')
         print(root_dir)
         check_path = root_dir + 'site-packages/single_launch.lock'
-        if not os.path.exists(check_path):
+        if os.path.exists(check_path):
+        	print('path already exists)
+        else:
         	shutil.copy(self.cwd + '/resources/single_launch.lock', check_path )
         	print('moved')
 
