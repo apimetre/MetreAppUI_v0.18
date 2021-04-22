@@ -1,3 +1,4 @@
+
 ## Python imports
 import os
 import requests
@@ -38,9 +39,18 @@ from app_single_launch import AppSingleLaunch
 
 APP_VERSION = 'v0.18'
 
-class MainView(ui.View):
+class NavView(ui.NavigationView(MainView))
     def __init__(self, app: AppSingleLaunch):
         self.app = app
+        self.tint_color =  '#494949'  
+        self.name = "MetreAce Nav"
+        self.flex = 'WH'
+        
+        
+class MainView(ui.View):
+    def __init__(self):
+  #  def __init__(self, app: AppSingleLaunch):
+  #      self.app = app
         self.name = "MetreAce Home"
         self.flex = 'WH'
         self.tint_color = '#494949'
@@ -382,9 +392,9 @@ class MainView(ui.View):
     
     
 if __name__ == '__main__':
-    app = AppSingleLaunch("MetreAce Home")
+    app = AppSingleLaunch("MetreAce Nav")
     if not app.is_active():
-        view = ui.NavigationView(app)
+        view = ui.View(app)
         view.tint_color =  '#494949'                                   
         app.will_present(view)
         view.present()
