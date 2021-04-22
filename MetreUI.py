@@ -71,7 +71,7 @@ class MainView(ui.View):
         self.fullbar = self.fillbar_outline.width
         
         # Version Label
-        self.vlabel = = self.v['vlabel']
+        self.vlabel = self.v['vlabel']
         self.cwd = os.getcwd()
 
         self.start_button.alpha = 0.25
