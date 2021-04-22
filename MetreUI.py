@@ -46,7 +46,6 @@ class MainView(ui.View):
         self.background_color = 'black'
         
         # Setup of UI Features
-        
         self.v = ui.load_view('mainview')
         self.v.frame = self.bounds
         self.v.flex = 'WH'
@@ -71,6 +70,8 @@ class MainView(ui.View):
         self.fillbar.x = 31.1
         self.fullbar = self.fillbar_outline.width
         
+        # Version Label
+        self.vlabel = = self.v['vlabel']
         self.cwd = os.getcwd()
 
         self.start_button.alpha = 0.25
