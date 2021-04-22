@@ -85,7 +85,7 @@ class MainView(ui.View):
         self.vbutton.action = self.popUpView
         
         self.start_button.alpha = 1
-        self.start_button.action = bleStatus
+        self.start_button.action = self.bleStatus
         # self.app_console.text = 'Once MetreAce reads "UPLOAD rdy", push CONNECT (above) to initiate data transfer from MetreAce'
         # self.ble_status.text = 'CONNECT'
         ble_icon_path = 'images/ble_off.png'
