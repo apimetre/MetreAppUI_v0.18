@@ -62,7 +62,7 @@ class MainView(ui.View):
         # Ble connection
         self.start_button = self.v['start_button']
         self.ble_icon = self.v['ble_icon']
-        self.ble_status_icon = v['ble_status_icon']
+        self.ble_status_icon = self.v['ble_status_icon']
         
                 
         # Status bar
