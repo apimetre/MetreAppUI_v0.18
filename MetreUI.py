@@ -44,11 +44,6 @@ class MainView(ui.View):
         self.name = "MetreAce Home"
         self.flex = 'WH'
         self.background_color = 'black'
-        #self.add_subview(ui.TextField(
-        #    width=200,
-        #    height=30,
-        #    placeholder="Type some text"))
-        #
         
         # Setup of UI Features
         
@@ -78,17 +73,26 @@ class MainView(ui.View):
         
         self.cwd = os.getcwd()
 
+        self.start_button.alpha = 0.25
+        on_main_thread(console.set_idle_timer_disabled)(True)
+        self.vlabel.text = APP_VERSION
+        #ConsoleAlert('Insert mouthpiece to connect your MetreAce and follow the instructions on the MetreAce display. CONNECT once MetreAce readys "UPLOAD rdy', v)
+        
+        self.getData()
+        
+        self.vbutton.alpha = 1
+        self.vbutton.action = self.popUpView
+        
+        self.start_button.alpha = 1
+        self.start_button.action = bleStatus
+        # self.app_console.text = 'Once MetreAce reads "UPLOAD rdy", push CONNECT (above) to initiate data transfer from MetreAce'
+        # self.ble_status.text = 'CONNECT'
+        ble_icon_path = 'images/ble_off.png'
+        self.ble_status_icon.image = ui.Image.named(ble_icon_path)
+        self.files_to_upload = os.listdir('data_files/converted_files/')
         
     def will_close(self) -> None:
         self.app.will_close()
-
-
-
-
-
-
-
-
 
 # This sets up main navigation view
 
@@ -107,7 +111,7 @@ class MainView(ui.View):
                     ble_delegate = BleDelegate(settings_page, s_table, d_table, self.cwd)
                     
                 if sender.title =='Help':
-                    help_page = pushed_view['toolbarview']
+                    help_page = pushed_view['toolbarview'
                     hview = ui.load_view('toolbar')
                     self.add_subview(hview)
                     inst_page = hview['online_instructions']
@@ -225,39 +229,9 @@ class MainView(ui.View):
             newWindow.present()
         except:
             newWindow.load_html(nolog_html)
-        
-    
-    ############### START MAIN CODE HERE #######################
-    self.start_button.alpha = 0.25
-    on_main_thread(console.set_idle_timer_disabled)(True)
-    self.vlabel.text = APP_VERSION
-    #ConsoleAlert('Insert mouthpiece to connect your MetreAce and follow the instructions on the MetreAce display. CONNECT once MetreAce readys "UPLOAD rdy', v)
-    
-    self.getData()
-    
-    self.vbutton.alpha = 1
-    self.vbutton.action = self.popUpView
-    
-    self.start_button.alpha = 1
-    self.start_button.action = bleStatus
-    # self.app_console.text = 'Once MetreAce reads "UPLOAD rdy", push CONNECT (above) to initiate data transfer from MetreAce'
-    # self.ble_status.text = 'CONNECT'
-    ble_icon_path = 'images/ble_off.png'
-    self.ble_status_icon.image = ui.Image.named(ble_icon_path)
-                                            
-   ###################   Here is where you do stuff for textscroll    ########
-    try:
-        testdate_box.text = max(etime).strftime("%b %d, %Y, %I:%M %p")
-        if acval[etime.index(max(etime))] <2:
-            res_string = "<2 ppm"
-        else:
-            res_string = str(round(acval[etime.index(max(etime))],2)) + ' ppm'
-        testres_box.text = res_string
-    except:
-        testdate_box.text = "No data yet"
-        testres_box.text = "No data yet"
+
     ########################################
-    self.files_to_upload = os.listdir('data_files/converted_files/')
+    
     def main(self):
                                             
         self.main_progress_bar =ProgressBar(self.fillbar, self.fillbar_outline, self.fullbar)
@@ -379,29 +353,7 @@ class MainView(ui.View):
         self.ble_status.text = 'CONNECT'
 
         
-    self.tint_color = '#494949'
-    
-    self.add_subview(self.v)
-    
-    # Implementation of navigation view/mainview
-    l = self.create_l_buttonItems('Settings','|','Summaries','|', 'Help')
-    self.left_button_items = l
-    
-    self.nav = ui.NavigationView(self)
-    
-    self.nav.tint_color = '#494949'
-    self.nav.present()
-                                            
-                                            
-    if len(self.files_to_upload) >=2:
-        self.start_button.alpha = 0.5
-        self.ble_status.text = ''
-        self.main()
-    
-        
-    else:
-        #self.app_console.text = 'Once MetreAce reads "UPLOAD rdy", push CONNECT (above) to initiate data transfer from MetreAce'
-        self.ble_status.text = 'CONNECT'
+
         
         
         
