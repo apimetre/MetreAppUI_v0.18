@@ -1,4 +1,5 @@
 
+
 ## Python imports
 import os
 import requests
@@ -39,18 +40,13 @@ from app_single_launch import AppSingleLaunch
 
 APP_VERSION = 'v0.18'
 
-class NavView(ui.NavigationView(MainView)):
-    def __init__(self, app: AppSingleLaunch):
-        self.app = app
-        self.tint_color =  '#494949'  
-        self.name = "MetreAce Nav"
-        self.flex = 'WH'
+
         
         
 class MainView(ui.View):
-    def __init__(self):
-  #  def __init__(self, app: AppSingleLaunch):
-  #      self.app = app
+   # def __init__(self):
+    def __init__(self, app: AppSingleLaunch):
+        self.app = app
         self.name = "MetreAce Home"
         self.flex = 'WH'
         self.tint_color = '#494949'
@@ -67,13 +63,14 @@ class MainView(ui.View):
         
         # Console
         self.app_console = self.v['console']
-        self.app_conosole.alpha = 0
+        self.app_console.alpha = 0
        
         
         # Ble connection
         self.start_button = self.v['start_button']
         self.ble_icon = self.v['ble_icon']
-        self.ble_status_icon = v['ble_status_icon']
+        self.ble_status_icon = self.v['ble_status_icon']
+        self.ble_status = self.v['ble_status']
         
                 
         # Status bar
@@ -81,6 +78,9 @@ class MainView(ui.View):
         self.fillbar_outline = self.v['background']
         self.fillbar.x = 31.1
         self.fullbar = self.fillbar_outline.width
+        
+        # Version label
+        self.vlabel = self.v['vlabel']
         
         self.cwd = os.getcwd()
 
@@ -95,7 +95,7 @@ class MainView(ui.View):
         self.vbutton.action = self.popUpView
         
         self.start_button.alpha = 1
-        self.start_button.action = bleStatus
+        self.start_button.action = self.bleStatus
         # self.app_console.text = 'Once MetreAce reads "UPLOAD rdy", push CONNECT (above) to initiate data transfer from MetreAce'
         # self.ble_status.text = 'CONNECT'
         ble_icon_path = 'images/ble_off.png'
@@ -103,11 +103,11 @@ class MainView(ui.View):
         self.files_to_upload = os.listdir('data_files/converted_files/')
 
 
-        self.add_subview(v)
+        self.add_subview(self.v)
         
         # Implementation of navigation view/mainview
-        self.l = self.create_l_buttonItems('Settings','|','Summaries','|', 'Help')
-        self.left_button_items = self.l
+        #self.l = self.create_l_buttonItems('Settings','|','Summaries','|', 'Help')
+        #self.left_button_items = self.l
 
         if len(self.files_to_upload) >=2:
             self.start_button.alpha = 0.5
@@ -162,7 +162,7 @@ class MainView(ui.View):
         for b in buttons:
             b=ui.ButtonItem(b)
             b.tint_color='#494949'
-            b.action= button_nav
+            b.action= self.button_nav
             items.append(b)
         return items
 
@@ -384,7 +384,16 @@ class MainView(ui.View):
         self.start_button.alpha = 1
         self.ble_status.text = 'CONNECT'
 
-        
+
+#class NavView(ui.View):
+#    def __init__(self, app: AppSingleLaunch):
+#        self.app = app
+#        self.tint_color =  '#494949'  
+#        self.name = "MetreAce Nav"
+#        self.flex = 'WH'
+        #self.nav = ui.NavigationView(MainView())
+        #self.add_subview(MainView)
+        #self.nav.present()
 
         
         
@@ -392,9 +401,9 @@ class MainView(ui.View):
     
     
 if __name__ == '__main__':
-    app = AppSingleLaunch("MetreAce Nav")
+    app = AppSingleLaunch("MetreAce Home")
     if not app.is_active():
         view = ui.View(app)
-        view.tint_color =  '#494949'                                   
+        #view.tint_color =  '#494949'                                   
         app.will_present(view)
         view.present()
