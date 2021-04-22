@@ -107,7 +107,7 @@ class MainView(ui.View):
                     ble_delegate = BleDelegate(settings_page, s_table, d_table, self.cwd)
                     
                 if sender.title =='Help':
-                    help_page = pushed_view['toolbarview'
+                    help_page = pushed_view['toolbarview']
                     hview = ui.load_view('toolbar')
                     self.add_subview(hview)
                     inst_page = hview['online_instructions']
