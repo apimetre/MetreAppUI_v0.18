@@ -39,7 +39,7 @@ from app_single_launch import AppSingleLaunch
 
 APP_VERSION = 'v0.18'
 
-class NavView(ui.NavigationView)
+class NavView(ui.NavigationView(MainView)):
     def __init__(self, app: AppSingleLaunch):
         self.app = app
         self.tint_color =  '#494949'  
@@ -48,9 +48,9 @@ class NavView(ui.NavigationView)
         
         
 class MainView(ui.View):
-    #def __init__(self):
-    def __init__(self, app: AppSingleLaunch):
-        self.app = app
+    def __init__(self):
+  #  def __init__(self, app: AppSingleLaunch):
+  #      self.app = app
         self.name = "MetreAce Home"
         self.flex = 'WH'
         self.tint_color = '#494949'
@@ -392,7 +392,7 @@ class MainView(ui.View):
     
     
 if __name__ == '__main__':
-    app = AppSingleLaunch("MetreAce Home")
+    app = AppSingleLaunch("MetreAce Nav")
     if not app.is_active():
         view = ui.View(app)
         view.tint_color =  '#494949'                                   
