@@ -1,5 +1,4 @@
 
-
 ## Python imports
 import os
 import requests
@@ -40,16 +39,28 @@ from app_single_launch import AppSingleLaunch
 
 APP_VERSION = 'v0.18'
 
-
-        
-        
 class MainView(ui.View):
-   # def __init__(self):
     def __init__(self, app: AppSingleLaunch):
         self.app = app
-        self.name = "MetreAce Home"
+        self.name = "Demo1"
         self.flex = 'WH'
-        self.tint_color = '#494949'
+        self.background_color = 'white'
+        self.add_subview(ui.TextField(
+            width=200,
+            height=30,
+            placeholder="Type some text"))
+
+    def will_close(self) -> None:
+        self.app.will_close()
+        
+        
+class MainView2(ui.View):
+    def __init__(self):
+    #def __init__(self, app: AppSingleLaunch):
+        #self.app = app
+        self.name = "MetreAce_Home"
+        self.flex = 'WH'
+        #self.tint_color = '#494949'
         self.background_color = 'black'
         
         # Setup of UI Features
@@ -57,8 +68,12 @@ class MainView(ui.View):
         self.v = ui.load_view('mainview')
         self.v.frame = self.bounds
         self.v.flex = 'WH'
+        #self.add_subview(self.v)
+        #self.v.present('Sheet')
+        #self.present('Sheet')
+       
 
-        # Bokeh view of chart results
+#        # Bokeh view of chart results
         self.vbutton = self.v['vbutton']
         
         # Console
@@ -90,14 +105,14 @@ class MainView(ui.View):
         #ConsoleAlert('Insert mouthpiece to connect your MetreAce and follow the instructions on the MetreAce display. CONNECT once MetreAce readys "UPLOAD rdy', v)
         
         self.getData()
-        
+        #
         self.vbutton.alpha = 1
         self.vbutton.action = self.popUpView
-        
-        self.start_button.alpha = 1
+        #
+        #self.start_button.alpha = 1
         self.start_button.action = self.bleStatus
-        # self.app_console.text = 'Once MetreAce reads "UPLOAD rdy", push CONNECT (above) to initiate data transfer from MetreAce'
-        # self.ble_status.text = 'CONNECT'
+        ## self.app_console.text = 'Once MetreAce reads "UPLOAD rdy", push CONNECT (above) to initiate data transfer from MetreAce'
+        ## self.ble_status.text = 'CONNECT'
         ble_icon_path = 'images/ble_off.png'
         self.ble_status_icon.image = ui.Image.named(ble_icon_path)
         self.files_to_upload = os.listdir('data_files/converted_files/')
@@ -106,8 +121,8 @@ class MainView(ui.View):
         self.add_subview(self.v)
         
         # Implementation of navigation view/mainview
-        #self.l = self.create_l_buttonItems('Settings','|','Summaries','|', 'Help')
-        #self.left_button_items = self.l
+        self.l = self.create_l_buttonItems('Settings','|','Summaries','|', 'Help')
+        self.left_button_items = self.l
 
         if len(self.files_to_upload) >=2:
             self.start_button.alpha = 0.5
@@ -125,8 +140,8 @@ class MainView(ui.View):
         
     def will_close(self) -> None:
         self.app.will_close()
-
-# This sets up main navigation view
+#
+## This sets up main navigation view
 
     def button_nav(self, sender):
         def connect(a,b):
@@ -385,25 +400,32 @@ class MainView(ui.View):
         self.ble_status.text = 'CONNECT'
 
 
-#class NavView(ui.View):
-#    def __init__(self, app: AppSingleLaunch):
-#        self.app = app
-#        self.tint_color =  '#494949'  
-#        self.name = "MetreAce Nav"
-#        self.flex = 'WH'
-        #self.nav = ui.NavigationView(MainView())
-        #self.add_subview(MainView)
+class NavView(ui.View):
+    def __init__(self, app: AppSingleLaunch):
+        self.app = app
+        self.tint_color =  '#494949'  
+        self.name = "MetreAce Nav"
+        self.flex = 'WH'
+        #root = ui.load_view(MainView2)
+        #self.v = ui.NavigationView(MainView2)
+        #self.v = ui.NavigationView(self)
+        #self.v.add_subview(MainView2())
+        #self.v.present()
+       
+        self.nav = ui.NavigationView(MainView2())
+        #(NavigationView(MainView))
         #self.nav.present()
-
+#
         
         
         
     
     
 if __name__ == '__main__':
-    app = AppSingleLaunch("MetreAce Home")
+    app = AppSingleLaunch("MetreAce Nav")
     if not app.is_active():
-        view = ui.View(app)
+        nav_view = NavView(app).nav
         #view.tint_color =  '#494949'                                   
-        app.will_present(view)
-        view.present()
+        app.will_present(nav_view)
+        #nav_view.nav.present()
+        nav_view.present()
