@@ -56,7 +56,7 @@ class MainView(ui.View):
         
         # Console
         self.app_console = self.v['console']
-        self.app_conosole.alpha = 0
+        self.app_console.alpha = 0
        
         
         # Ble connection
