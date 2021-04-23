@@ -267,7 +267,7 @@ class MainView(ui.View):
         self.main_progress_bar =ProgressBar(self.fillbar, self.fillbar_outline, self.fullbar)
         global process_done
         process_done = False
-        def animate_bar(self):
+        def animate_bar():
             cloud_progress_bar = ProgressBar(self.fillbar, self.fillbar_outline, self.fullbar)
             for i in range(0, 100):
                 if process_done:
@@ -320,7 +320,7 @@ class MainView(ui.View):
                    json_text = json.dumps(data_dict_to_send)
                    self.main_progress_bar.update_progress_bar(0.1)
                    self.app_console.text = 'Interpretting results from test from ' + dt +'. This may take a few moments...'
-                   pt = threading.Thread(target = self.animate_bar) # don't do this unless u start a parallel thread to send request
+                   pt = threading.Thread(target = animate_bar()) # don't do this unless u start a parallel thread to send request
                    pt.start()
     
                    print('sending to cloud')
@@ -334,7 +334,7 @@ class MainView(ui.View):
                    pt.join()
                    process_done = True
                    try:
-                       app_console.text = 'Results from ' + dt + ': ' + response_json['pred_content']
+                       self.app_console.text = 'Results from ' + dt + ': ' + response_json['pred_content']
                        print(response_json['pred_content'])
                        self.main_progress_bar.update_progress_bar(0.92)
                        newlog = {'Etime': response_json['refnum'],
