@@ -31,7 +31,7 @@ from lib.UISummaryDelegate import SummaryDelegate
 from lib.UIBleDelegate import BleDelegate, BokehDelegate, loading_html, updating_html, nolog_html, getPlot
 from lib.UIHelpDelegate import HelpDelegate
 from lib.UIFeatures import ProgressBar, ConsoleAlert
-from lib.UITableDelegate import ResutsTable
+from lib.UITableDelegate import ResultsTable
 from app_single_launch import AppSingleLaunch
 
 # Using single launch lock as suggested in
