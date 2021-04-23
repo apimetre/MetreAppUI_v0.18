@@ -55,7 +55,7 @@ def getPlot(bview, src, initial = True):
             log = json.load(json_file)
         logData = json.dumps(log)
         try:
-            tzData = json.loads(src + 'log/timezone_settings.json')
+            tzData = json.loads(src + '/log/timezone_settings.json')
         except:
             tzData = json.dumps({'timezone': 'US/Pacific'})
         response = requests.post(url, files = [('json_file', ('log.json', logData, 'application/json')), ('tz_info', ('tz.json', tzData, 'application/json'))])
