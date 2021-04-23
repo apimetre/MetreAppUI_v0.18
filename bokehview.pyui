@@ -24,6 +24,7 @@
         "class" : "Label",
         "attributes" : {
           "name" : "label1",
+          "flex":"WHLRTB",
           "text_color" : "RGBA(1.000000,1.000000,1.000000,1.000000)",
           "frame" : "{{85, 224}, {150, 32}}",
           "uuid" : "F22F1D59-336A-4B47-A635-5660B8D015CF",
