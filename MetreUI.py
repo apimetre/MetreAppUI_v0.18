@@ -144,12 +144,11 @@ class MainView(ui.View):
                 if sender.title =='Help':
                     help_page = pushed_view['toolbarview']
                     hview = ui.load_view('toolbar')
-                    #self.add_subview(hview)
                     inst_page = pushed_view['online_instructions']
                     qa_page = pushed_view['online_qa']
                     recover_page = pushed_view['recover_button']
-                    help_delegate = HelpDelegate(help_page, inst_page, qa_page, recover_page)
-                    #hview.present()
+                    help_delegate = HelpDelegate(hview, inst_page, qa_page, recover_page)
+
                     
         connect('Settings','file_view')
         connect('Help','toolbar')
