@@ -55,7 +55,7 @@ def getPlot(bview, src, initial = True):
             log = json.load(json_file)
         logData = json.dumps(log)
         try:
-            tzData = json.loads('log/timezone_settings.json')
+            tzData = json.loads(src + 'log/timezone_settings.json')
         except:
             tzData = json.dumps({'timezone': 'US/Pacific'})
         response = requests.post(url, files = [('json_file', ('log.json', logData, 'application/json')), ('tz_info', ('tz.json', tzData, 'application/json'))])
@@ -64,8 +64,16 @@ def getPlot(bview, src, initial = True):
         
     # Handles exception if no previous log data
     except:
-        bokeh_view.load_html(nolog_html)     
-    
+        bokeh_view.load_html(nolog_html)
+        
+class BokehDelegate(object):
+    def __init__(self, subview_, cwd_):
+        self.subview = subview_
+        self.cwd = cwd_
+        getPlot(self.subview, self.cwd)
+
+        
+        
 class BleDelegate(object):
 	def __init__(self, subview_, table_, dt_table_, cwd_):
 		self.subview = subview_
