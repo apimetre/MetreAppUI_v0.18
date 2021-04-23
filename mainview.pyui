@@ -16,8 +16,8 @@
           "uuid" : "A493C00C-60C5-467B-A67A-033928E5F1E2",
           "class" : "Button",
           "font_bold" : false,
-          "name" : "start_button",
-          "font_size" : 15
+          "font_size" : 15,
+          "name" : "start_button"
         },
         "selected" : false
       },
@@ -76,51 +76,6 @@
           "background_color" : "RGBA(0.000000,0.000000,0.000000,1.000000)",
           "font_size" : 8,
           "font_name" : "HelveticaNeue-Bold"
-        },
-        "selected" : false
-      },
-      {
-        "nodes" : [
-
-        ],
-        "frame" : "{{28, 251}, {266, 32}}",
-        "class" : "Label",
-        "attributes" : {
-          "uuid" : "90420916-4B71-4F6D-98B5-ED3F33A45D45",
-          "font_size" : 16,
-          "background_color" : "RGBA(0.000000,0.000000,0.000000,1.000000)",
-          "frame" : "{{85, 224}, {150, 32}}",
-          "border_color" : "RGBA(0.000000,0.000000,0.000000,1.000000)",
-          "alignment" : "center",
-          "text_color" : "RGBA(1.000000,0.274510,0.274510,1.000000)",
-          "text" : "Results Chart",
-          "font_name" : "HelveticaNeue-Bold",
-          "class" : "Label",
-          "name" : "label1",
-          "flex" : "WHLRTB"
-        },
-        "selected" : false
-      },
-      {
-        "nodes" : [
-
-        ],
-        "frame" : "{{131, 445}, {83, 32}}",
-        "class" : "Button",
-        "attributes" : {
-          "uuid" : "6B3CE443-D942-44CE-AC0B-69036845EE14",
-          "font_size" : 10,
-          "corner_radius" : 5,
-          "background_color" : "RGBA(1.000000,0.972222,0.972222,1.000000)",
-          "frame" : "{{120, 224}, {80, 32}}",
-          "tint_color" : "RGBA(0.278302,0.278302,0.278302,1.000000)",
-          "border_width" : 2,
-          "border_color" : "RGBA(0.301887,0.301887,0.301887,1.000000)",
-          "title" : "Results Chart",
-          "font_bold" : true,
-          "class" : "Button",
-          "name" : "vbutton",
-          "flex" : "LRTB"
         },
         "selected" : false
       },
@@ -189,7 +144,7 @@
         "nodes" : [
 
         ],
-        "frame" : "{{81, 200}, {161, 32}}",
+        "frame" : "{{81, 209}, {161, 32}}",
         "class" : "Label",
         "attributes" : {
           "uuid" : "063302DE-01F1-44EE-BB6F-CD8F07AF0AD8",
@@ -228,22 +183,22 @@
         "nodes" : [
 
         ],
-        "frame" : "{{21, 227}, {273, 210}}",
+        "frame" : "{{22, 241}, {273, 210}}",
         "class" : "TableView",
         "attributes" : {
           "flex" : "WH",
           "data_source_items" : "Row 1\nRow 2\nRow 3",
-          "name" : "results_table",
+          "row_height" : 36,
           "frame" : "{{60, 140}, {200, 200}}",
+          "uuid" : "983A6452-458D-41DC-A961-21AD20A4C464",
           "data_source_number_of_lines" : 1,
           "class" : "TableView",
           "background_color" : "RGBA(1.0, 1.0, 1.0, 1.0)",
           "data_source_delete_enabled" : true,
           "data_source_font_size" : 18,
-          "row_height" : 36,
-          "uuid" : "983A6452-458D-41DC-A961-21AD20A4C464"
+          "name" : "results_table"
         },
-        "selected" : true
+        "selected" : false
       },
       {
         "nodes" : [
@@ -271,11 +226,11 @@
     "frame" : "{{0, 0}, {320, 480}}",
     "class" : "View",
     "attributes" : {
-      "background_color" : "RGBA(0.007075,0.007075,0.007075,1.000000)",
+      "name" : "",
       "enabled" : true,
+      "background_color" : "RGBA(0.007075,0.007075,0.007075,1.000000)",
       "tint_color" : "RGBA(1.000000,0.274510,0.274510,1.000000)",
       "border_color" : "RGBA(0.000000,0.000000,0.000000,1.000000)",
-      "name" : "",
       "flex" : ""
     },
     "selected" : false
