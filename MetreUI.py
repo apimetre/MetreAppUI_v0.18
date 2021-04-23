@@ -55,9 +55,6 @@ class MainView(ui.View):
         self.v.frame = self.bounds
         self.v.flex = 'WH'
 
-
-#        # Bokeh view of chart results
-        self.vbutton = self.v['vbutton']
         
         # Console
         self.app_console = self.v['console']
@@ -100,7 +97,6 @@ class MainView(ui.View):
         
         # Set up UI Functions
         self.getData()
-        self.vbutton.action = self.popUpView
         self.start_button.action = self.bleStatus
         self.add_subview(self.v)
         
