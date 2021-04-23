@@ -1,0 +1,51 @@
+[
+  {
+    "nodes" : [
+      {
+        "nodes" : [
+
+        ],
+        "frame" : "{{6, 140}, {308, 208}}",
+        "class" : "WebView",
+        "attributes" : {
+          "flex" : "WH",
+          "frame" : "{{60, 140}, {200, 200}}",
+          "uuid" : "BE89AD4F-43DF-4A20-93DD-2A164072FAB6",
+          "class" : "WebView",
+          "name" : "webview1",
+          "scales_to_fit" : true
+        },
+        "selected" : true
+      },
+      {
+        "nodes" : [
+
+        ],
+        "frame" : "{{6, 28}, {308, 93}}",
+        "class" : "Label",
+        "attributes" : {
+          "name" : "label1",
+          "text_color" : "RGBA(1.000000,1.000000,1.000000,1.000000)",
+          "frame" : "{{85, 224}, {150, 32}}",
+          "uuid" : "F22F1D59-336A-4B47-A635-5660B8D015CF",
+          "class" : "Label",
+          "alignment" : "center",
+          "text" : "Your MetreAce Results",
+          "font_size" : 30,
+          "font_name" : "HelveticaNeue-BoldItalic"
+        },
+        "selected" : false
+      }
+    ],
+    "frame" : "{{0, 0}, {320, 480}}",
+    "class" : "View",
+    "attributes" : {
+      "enabled" : true,
+      "background_color" : "RGBA(0.000000,0.000000,0.000000,1.000000)",
+      "tint_color" : "RGBA(0.000000,0.478000,1.000000,1.000000)",
+      "border_color" : "RGBA(0.000000,0.000000,0.000000,1.000000)",
+      "flex" : ""
+    },
+    "selected" : false
+  }
+]
