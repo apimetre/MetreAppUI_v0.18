@@ -355,7 +355,7 @@ class MainView(ui.View):
                    time.sleep(1)
                    shutil.move(source_path + file, self.cwd +'/data_files/processed_files/' + file)
                else:
-                   pass
+                   continue
                time.sleep(1)
         self.getData()
         ResultsTable(self.v, self.results_table, self.acetone, self.etime)                                     
@@ -366,6 +366,7 @@ class MainView(ui.View):
         self.app_console.text = 'Test Processing and Upload Complete.'
         time.sleep(3)
         self.app_console.alpha = 0
+        self.app_console.text = ''
         self.start_button.alpha = 1
         self.ble_status.text = 'CONNECT'
 
