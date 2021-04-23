@@ -67,7 +67,7 @@ def getPlot(bview, src, initial = True):
         bokeh_view.load_html(nolog_html)     
     
 class BleDelegate(object):
-	def __init__(self, subview_, table_, dt_table_, cwd_, bview_):
+	def __init__(self, subview_, table_, dt_table_, cwd_, ):
 		self.subview = subview_
 		self.table = table_
 		self.table_items = ['Device1', 'Device2', 'Device3']
@@ -82,9 +82,6 @@ class BleDelegate(object):
 		self.dt_table.delegate.action = self.select_time
 		
 		self.cwd_ = cwd_
-		self.bview_ = bview_
-		
-	
 		
 		self.selector = ui.Button(title = 'Choose a device to pair', action = self.save_device)
 		self.selector.y = self.table.y - 30
@@ -113,9 +110,6 @@ class BleDelegate(object):
 	def select_device(self, sender):
 		self.selection = self.list_source.items[sender.selected_row]
 		print(self.selection)
-		#self.selector = ui.Button(title = 'Set Default Device as ' + str(self.selection), action = self.save_device)
-		#self.selector = ui.Button(title = '', action = self.save_device)
-		#self.subview.add_subview(self.selector)
 		self.selector.title = 'Save Device' 
 		self.selector.bg_color = 'orange'
 		self.current_device.text = 'Change default device to ' + str(self.selection) + ' ?'
@@ -141,12 +135,9 @@ class BleDelegate(object):
 				json.dump(self.time_log, outfile)
 			self.time_selector.title = 'Saved'
 			self.time_selector.bg_color = 'None'
-			try:
-				getPlot(self.bview_, self.cwd_)
-			except:
-				pass
 		except AttributeError:
 			pass
+		
 	def fetch_value(self,logtype):
 		if logtype == 'dev':
 			logname = 'device_settings.json'
