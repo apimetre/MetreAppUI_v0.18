@@ -348,7 +348,7 @@ class MainView(ui.View):
                           json.dump(self.log, outfile)
                        self.getData()
                        self.main_progress_bar.update_progress_bar(0.95)
-                        ResultsTable(self.v, self.results_table, self.acetone, self.etime)                       
+                       ResultsTable(self.v, self.results_table, self.acetone, self.etime)                       
                        self.main_progress_bar.update_progress_bar(1)
                    except:
                        app_console.text = 'Oops...something was wrong with the test from ' + dt + ' and it could not be processed'
