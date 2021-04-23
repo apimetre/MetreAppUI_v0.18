@@ -394,6 +394,6 @@ if __name__ == '__main__':
     app = AppSingleLaunch("MetreAce Nav")
     if not app.is_active():
         nav_view = NavView(app).nav
-        view.tint_color =  '#494949'                                   
+        nav_view.tint_color =  '#494949'                                   
         app.will_present(nav_view)
         nav_view.present()
