@@ -347,24 +347,8 @@ class MainView(ui.View):
                        with open(self.cwd + "/log/log_003.json", "w") as outfile:
                           json.dump(self.log, outfile)
                        self.getData()
-                                            
-                       ########################### 
-                                            
-                       #testdate_box.text = max(self.etime).strftime("%b %d, %Y, %I:%M %p")
-                                            
-                       #if self.acval[self.etime.index(max(self.etime))] <2:
-                       #   res_string = "<2 ppm"
-                       #else:
-                       #   res_string = str(round(acval[etime.index(max(etime))],2)) + ' ppm'
-                       #testres_box.text = res_string
-                        #getPlot(bokeh_view, cwd, initial = False)
-                                            
                        self.main_progress_bar.update_progress_bar(0.95)
-                       
-mi
-                                            
-                       #### UPDATE TABLE HERE
-                       
+                        ResultsTable(self.v, self.results_table, self.acetone, self.etime)                       
                        self.main_progress_bar.update_progress_bar(1)
                    except:
                        app_console.text = 'Oops...something was wrong with the test from ' + dt + ' and it could not be processed'
