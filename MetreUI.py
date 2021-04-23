@@ -347,7 +347,9 @@ class MainView(ui.View):
                    with open(self.cwd + "/log/log_003.json", "w") as outfile:
                       json.dump(self.log, outfile)
                    self.getData()
+                   print(self.acetone)
                    self.main_progress_bar.update_progress_bar(0.95)
+                   self.results_table = self.v['results_table']
                    ResultsTable(self.v, self.results_table, self.acetone, self.etime)                       
                    self.main_progress_bar.update_progress_bar(1)
                    #except:
@@ -358,6 +360,7 @@ class MainView(ui.View):
                    continue
                time.sleep(1)
         self.getData()
+        self.results_table = self.v['results_table']
         ResultsTable(self.v, self.results_table, self.acetone, self.etime)                                     
         self.fillbar.alpha =0
         self.fillbar_outline.alpha = 0
