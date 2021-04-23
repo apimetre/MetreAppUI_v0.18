@@ -160,7 +160,7 @@ class MainView2(ui.View):
             if sender.title == a:
                 view_to_push = b
                 pushed_view = ui.load_view(view_to_push)
-                v.navigation_view.push_view(pushed_view)
+                self.v.navigation_view.push_view(pushed_view)
                     
                 if sender.title=='Settings':
                     settings_page = pushed_view['view1']
