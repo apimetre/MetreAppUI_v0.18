@@ -405,9 +405,9 @@ class BleUploader():
             
             try:
                 out_msg_txt =json.dumps({"cmd":"set_ble_state","active":False})
-                cmd_fn(out_msg_txt, "set_ble_state", show_progress = False)
+                cmd_fn(out_msg_txt, "set_ble_state", show_progress = False, to_max = 50)
             except:
-                print('Failed to set state')
+                continue
 
             #out_msg_tone =json.dumps({"cmd": "avr", "payload": { "cmd": "tone", "freq":"1000", "duration":"1000" }})
             #cmd_fn(out_msg_tone, show_progress = False)
@@ -418,10 +418,11 @@ class BleUploader():
             
             #outmsg_t0 = json.dumps({'cmd':'avr', 'payload':{ "cmd": "thermistor", "rep_ms":0, "smpl_ms":0, "n":1 }})
             #cmd_fn(outmsg_t0, show_progress = False)
-                      
-            out_msg2 =json.dumps({"cmd": "disconnect_ble"})
-            rstring, no_counter = cmd_fn(out_msg2, "disconnect_ble", show_progress = True)
-            self.console_box_.text = rstring
+            try:          
+                out_msg2 =json.dumps({"cmd": "disconnect_ble"})
+                rstring, no_counter = cmd_fn(out_msg2, "disconnect_ble", show_progress = True, to_max = 30)
+            except:
+                continue
             ConsoleAlert('Remove Mouthpiece!', self.v_)
             ble_icon_path = 'images/ble_off.png'
             self.ble_status_icon_.image = ui.Image.named(ble_icon_path)
