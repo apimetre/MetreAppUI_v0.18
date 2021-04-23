@@ -15,13 +15,14 @@ class ResultsTable(object):
 		self.table = table_
 		self.etime = etime_res
 		self.ac = ac_res
-		results = []
+
 		dt_list = []
+		results = []
 		for i in self.etime:
-			dt_list.append(i.strftime("%b %d, %Y, %I:%M %p"))
-			
-		
+			dt_list.append(i.strftime("%b %d, %Y, %I:%M %p"))		
 		for i in self.ac:
 			results.append(dt_list[np.where(self.ac == self.ac[i])] + '     ' + round(self.ac[i], 1) + ' ppm')
 		self.table_items = results        
-		self.list_source = ui.ListDataSource(self.table_it
+		self.list_source = ui.ListDataSource(self.table_items)
+		self.table.data_source = self.list_source
+        
