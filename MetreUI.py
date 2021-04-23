@@ -31,6 +31,7 @@ from lib.UISummaryDelegate import SummaryDelegate
 from lib.UIBleDelegate import BleDelegate, BokehDelegate, loading_html, updating_html, nolog_html, getPlot
 from lib.UIHelpDelegate import HelpDelegate
 from lib.UIFeatures import ProgressBar, ConsoleAlert
+from lib.UITableDelegate import ResutsTable
 from app_single_launch import AppSingleLaunch
 
 # Using single launch lock as suggested in
@@ -93,9 +94,11 @@ class MainView(ui.View):
         	shutil.copy(self.cwd + '/resources/single_launch.lock', check_path )
         	print('moved')
 
-        
+
         # Set up UI Functions
         self.getData()
+        self.results_table = self.v['results_table']
+        ResultsTable(self.v, self.results_table, self.acetone, self.etime)
         self.start_button.action = self.bleStatus
         self.add_subview(self.v)
         
@@ -216,7 +219,7 @@ class MainView(ui.View):
     
     def getData(self):
         
-        with open('log/log_003.json') as json_file:
+        with open(self.cwd + '/log/log_003.json') as json_file:
             self.log = json.load(json_file)
         self.etime = []
         self.weektime = []
@@ -248,7 +251,7 @@ class MainView(ui.View):
             newWindow.load_html(loading_html)
             logData = json.dumps(self.log)
             try:
-                tzData = json.loads('log/timezone_settings.json')
+                tzData = json.loads(self.cwd + '/log/timezone_settings.json')
             except:
                 tzData = json.dumps({'timezone': 'US/Pacific'})
             response = requests.post(url, files = [('json_file', ('log.json', logData, 'application/json')), ('tz_info', ('tz.json', tzData, 'application/json'))])
@@ -293,7 +296,7 @@ class MainView(ui.View):
         time.sleep(3)
         
         try:
-            with open('log/timezone_settings.json') as f:
+            with open(self.cwd + '/log/timezone_settings.json') as f:
                 tzsource = json.loads(f)
                 tz = 'US/Pacific'
         
@@ -341,7 +344,7 @@ class MainView(ui.View):
                                   'Instr': response_json['instrument']}
                        for key, value in self.log.items():
                           self.log[key].append(newlog[key])
-                       with open("log/log_003.json", "w") as outfile:
+                       with open(self.cwd + "/log/log_003.json", "w") as outfile:
                           json.dump(self.log, outfile)
                        self.getData()
                                             
@@ -358,15 +361,15 @@ class MainView(ui.View):
                                             
                        self.main_progress_bar.update_progress_bar(0.95)
                        
-                       main_progress_bar.update_progress_bar(0.97)
+mi
                                             
                        #### UPDATE TABLE HERE
                        
-                       main_progress_bar.update_progress_bar(1)
+                       self.main_progress_bar.update_progress_bar(1)
                    except:
                        app_console.text = 'Oops...something was wrong with the test from ' + dt + ' and it could not be processed'
                    time.sleep(1)
-                   shutil.move(source_path + file, cwd +'/data_files/processed_files/' + file)
+                   shutil.move(source_path + file, self.cwd +'/data_files/processed_files/' + file)
                else:
                    pass
                time.sleep(1)
