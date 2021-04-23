@@ -286,6 +286,7 @@ class MainView(ui.View):
         print("these are the files")
         print(files)
         numOfFiles = len(files)
+        self.app_console.alpha = 1
         if numOfFiles >1:
                self.app_console.text = str(numOfFiles-1) + ' breath tests are ready to be processed. Beginning data processing...'
         elif numOfFiles == 1:
@@ -319,7 +320,7 @@ class MainView(ui.View):
                    json_text = json.dumps(data_dict_to_send)
                    self.main_progress_bar.update_progress_bar(0.1)
                    self.app_console.text = 'Interpretting results from test from ' + dt +'. This may take a few moments...'
-                   pt = threading.Thread(target = animate_bar) # don't do this unless u start a parallel thread to send request
+                   pt = threading.Thread(target = self.animate_bar) # don't do this unless u start a parallel thread to send request
                    pt.start()
     
                    print('sending to cloud')
@@ -350,7 +351,7 @@ class MainView(ui.View):
                        ResultsTable(self.v, self.results_table, self.acetone, self.etime)                       
                        self.main_progress_bar.update_progress_bar(1)
                    except:
-                       app_console.text = 'Oops...something was wrong with the test from ' + dt + ' and it could not be processed'
+                       self.app_console.text = 'Oops...something was wrong with the test from ' + dt + ' and it could not be processed'
                    time.sleep(1)
                    shutil.move(source_path + file, self.cwd +'/data_files/processed_files/' + file)
                else:
@@ -363,6 +364,7 @@ class MainView(ui.View):
                                             
         self.app_console.text = 'Test Processing and Upload Complete.'
         time.sleep(3)
+        self.app_console.alpha = 0
         self.start_button.alpha = 1
         self.ble_status.text = 'CONNECT'
 
