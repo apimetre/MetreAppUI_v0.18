@@ -407,7 +407,7 @@ class BleUploader():
                 out_msg_txt =json.dumps({"cmd":"set_ble_state","active":False})
                 cmd_fn(out_msg_txt, "set_ble_state", show_progress = False, to_max = 50)
             except:
-                continue
+                print('could not send disconnect command')
 
             #out_msg_tone =json.dumps({"cmd": "avr", "payload": { "cmd": "tone", "freq":"1000", "duration":"1000" }})
             #cmd_fn(out_msg_tone, show_progress = False)
@@ -422,7 +422,7 @@ class BleUploader():
                 out_msg2 =json.dumps({"cmd": "disconnect_ble"})
                 rstring, no_counter = cmd_fn(out_msg2, "disconnect_ble", show_progress = True, to_max = 30)
             except:
-                continue
+                print('could not send disconnect command')
             ConsoleAlert('Remove Mouthpiece!', self.v_)
             ble_icon_path = 'images/ble_off.png'
             self.ble_status_icon_.image = ui.Image.named(ble_icon_path)
