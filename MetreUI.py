@@ -137,7 +137,7 @@ class MainView(ui.View):
                     results_page = pushed_view['bokeh_bg']
                     bview = ui.load_view('bokehview')
                     self.add_subview(bview)
-                    bokeh_delegate = BokehDelegate(bview, self.cwd)
+                    bokeh_delegate = BokehDelegate(bview['webview1'], self.cwd)
 
                 if sender.title =='Help':
                     help_page = pushed_view['toolbarview']
@@ -147,7 +147,7 @@ class MainView(ui.View):
                     qa_page = help_page['online_qa']
                     recover_page = help_page['recover_button']
                     help_delegate = HelpDelegate(hview, inst_page, qa_page, recover_page)
-                    hview.present()
+                    #hview.present()
                     
         connect('Settings','file_view')
         connect('Help','toolbar')
