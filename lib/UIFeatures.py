@@ -19,10 +19,10 @@ class ConsoleAlert():
         self.view = view_
         self.field = ui.Label(name = 'field', text = self.message, number_of_lines = 0, alignment = ui.ALIGN_CENTER, font = ("<system-bold>", 12), scales_font = True, border_width = 2, border_color = 'red', background_color = 'white'
        )
-        self.field.y = self.view.height * 0.12
+        self.field.y = self.view.height * 0.52
         self.field.x = self.view.width * 0.25
         self.field.width = self.view.width * 0.5
-        self.field.height = self.view.height * 0.57
+        self.field.height = self.view.height * 0.17
         self.button = ui.Button(title='X', action=self.tap_to_close)
         self.button.y = self.field.y
         self.button.x = self.field.x
