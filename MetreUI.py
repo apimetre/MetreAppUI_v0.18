@@ -118,7 +118,7 @@ class MainView2(ui.View):
         
         self.getData()
         self.results_table = self.v['results_table']
-        ResultsTable(self.v, self.results_table, self.varray)
+        ResultsTable(self.v, self.results_table, self.acetone, self.etime)
         self.vbutton.alpha = 1
         self.vbutton.action = self.popUpView
         #
