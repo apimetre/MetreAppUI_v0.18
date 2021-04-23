@@ -83,6 +83,7 @@ class BleUploader():
                 event = self.event_queue.pop()
                 print(f"event: {event}")
         if self.py_ble_uart.peripheral:
+            self.console_box_.alpha =1
             self.console_box_.text = ("Connecting to MetreAce instrument")
             
         def is_dst(dt=None, tzone="UTC"):
