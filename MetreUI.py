@@ -100,7 +100,7 @@ class MainView(ui.View):
         self.add_subview(self.v)
         
         # Implementation of navigation view/mainview
-        self.l = self.create_l_buttonItems('Settings','|','Summaries','|', 'Help')
+        self.l = self.create_l_buttonItems('Settings','|','Results','|', 'Help')
         self.left_button_items = self.l
         self.files_to_upload = os.listdir('data_files/converted_files/')
 
@@ -143,9 +143,9 @@ class MainView(ui.View):
                     help_page = pushed_view['toolbarview']
                     #hview = ui.load_view('toolbar')
                     #self.add_subview(hview)
-                    inst_page = hview['online_instructions']
-                    qa_page = hview['online_qa']
-                    recover_page = hview['recover_button']
+                    inst_page = help_page['online_instructions']
+                    qa_page = help_page['online_qa']
+                    recover_page = help_page['recover_button']
                     help_delegate = HelpDelegate(hview, inst_page, qa_page, recover_page)
                     hview.present()
                     
@@ -394,6 +394,6 @@ if __name__ == '__main__':
     app = AppSingleLaunch("MetreAce Nav")
     if not app.is_active():
         nav_view = NavView(app).nav
-        nav_view.tint_color =  '#494949'                                   
+        view.tint_color =  '#494949'                                   
         app.will_present(nav_view)
         nav_view.present()
