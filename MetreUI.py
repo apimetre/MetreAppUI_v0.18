@@ -270,6 +270,12 @@ class MainView2(ui.View):
                 self.varray = np.array(vectorized)
         if len(self.acetone) <=0:
             self.varray = []
+        print('Acetone')
+        print(self.acetone)
+        print('weektime')
+        print(self.weektime)
+        print('DT')
+        print(dtDateTime)
         
     
     # Command for larger Bokeh plot pop-up
