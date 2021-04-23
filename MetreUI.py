@@ -102,7 +102,7 @@ class MainView(ui.View):
         # Implementation of navigation view/mainview
         self.l = self.create_l_buttonItems('Settings','|','Results','|', 'Help')
         self.left_button_items = self.l
-        self.files_to_upload = os.listdir('data_files/converted_files/')
+        self.files_to_upload = os.listdir(self.cwd + '/data_files/converted_files/')
 
         # Process pre-uploaded tests (if available)
         if len(self.files_to_upload) >=2:
