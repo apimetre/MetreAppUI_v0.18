@@ -5,7 +5,7 @@
         "nodes" : [
 
         ],
-        "frame" : "{{138, 102}, {50, 48}}",
+        "frame" : "{{130, 100}, {66, 62}}",
         "class" : "Button",
         "attributes" : {
           "action" : "",
@@ -16,8 +16,8 @@
           "uuid" : "A493C00C-60C5-467B-A67A-033928E5F1E2",
           "class" : "Button",
           "font_bold" : false,
-          "name" : "start_button",
-          "font_size" : 15
+          "font_size" : 15,
+          "name" : "start_button"
         },
         "selected" : false
       },
@@ -29,7 +29,7 @@
         "class" : "View",
         "attributes" : {
           "border_width" : 2,
-          "flex" : "LR",
+          "flex" : "",
           "frame" : "{{110, 190}, {100, 100}}",
           "border_color" : "RGBA(0.000000,0.000000,0.000000,1.000000)",
           "corner_radius" : 0,
@@ -83,7 +83,7 @@
         "nodes" : [
 
         ],
-        "frame" : "{{138, 147}, {50, 16}}",
+        "frame" : "{{121, 163}, {82, 16}}",
         "class" : "Label",
         "attributes" : {
           "flex" : "WHLRTB",
@@ -188,15 +188,15 @@
         "attributes" : {
           "flex" : "WH",
           "data_source_items" : "Row 1\nRow 2\nRow 3",
-          "data_source_font_size" : 18,
+          "name" : "results_table",
           "frame" : "{{60, 140}, {200, 200}}",
           "uuid" : "983A6452-458D-41DC-A961-21AD20A4C464",
           "data_source_number_of_lines" : 1,
           "class" : "TableView",
+          "data_source_font_size" : 17,
           "background_color" : "RGBA(1.0, 1.0, 1.0, 1.0)",
-          "data_source_delete_enabled" : true,
-          "name" : "results_table",
-          "row_height" : 36
+          "row_height" : 36,
+          "data_source_delete_enabled" : false
         },
         "selected" : false
       },
@@ -204,7 +204,7 @@
         "nodes" : [
 
         ],
-        "frame" : "{{39, 96}, {244, 99}}",
+        "frame" : "{{39, 91}, {244, 99}}",
         "class" : "TextView",
         "attributes" : {
           "uuid" : "2E78B5C8-60A3-47BB-B133-AE88B8DBF078",
@@ -221,17 +221,17 @@
           "name" : "console",
           "flex" : "WH"
         },
-        "selected" : true
+        "selected" : false
       }
     ],
     "frame" : "{{0, 0}, {320, 480}}",
     "class" : "View",
     "attributes" : {
-      "border_color" : "RGBA(0.000000,0.000000,0.000000,1.000000)",
+      "tint_color" : "RGBA(1.000000,0.274510,0.274510,1.000000)",
       "enabled" : true,
+      "border_color" : "RGBA(0.000000,0.000000,0.000000,1.000000)",
       "background_color" : "RGBA(0.007075,0.007075,0.007075,1.000000)",
       "name" : "",
-      "tint_color" : "RGBA(1.000000,0.274510,0.274510,1.000000)",
       "flex" : ""
     },
     "selected" : false
