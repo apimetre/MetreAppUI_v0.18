@@ -357,7 +357,8 @@ class MainView(ui.View):
                else:
                    pass
                time.sleep(1)
-                                        
+        self.getData()
+        ResultsTable(self.v, self.results_table, self.acetone, self.etime)                                     
         self.fillbar.alpha =0
         self.fillbar_outline.alpha = 0
         self.main_progress_bar.update_progress_bar(0)
