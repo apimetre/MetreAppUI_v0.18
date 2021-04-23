@@ -16,8 +16,8 @@
           "uuid" : "A493C00C-60C5-467B-A67A-033928E5F1E2",
           "class" : "Button",
           "font_bold" : false,
-          "font_size" : 15,
-          "name" : "start_button"
+          "name" : "start_button",
+          "font_size" : 15
         },
         "selected" : false
       },
@@ -188,15 +188,15 @@
         "attributes" : {
           "flex" : "WH",
           "data_source_items" : "Row 1\nRow 2\nRow 3",
-          "row_height" : 36,
+          "data_source_font_size" : 18,
           "frame" : "{{60, 140}, {200, 200}}",
           "uuid" : "983A6452-458D-41DC-A961-21AD20A4C464",
           "data_source_number_of_lines" : 1,
           "class" : "TableView",
           "background_color" : "RGBA(1.0, 1.0, 1.0, 1.0)",
           "data_source_delete_enabled" : true,
-          "data_source_font_size" : 18,
-          "name" : "results_table"
+          "name" : "results_table",
+          "row_height" : 36
         },
         "selected" : false
       },
@@ -214,23 +214,24 @@
           "alignment" : "left",
           "autocorrection_type" : "default",
           "alpha" : 0,
+          "text_color" : "RGBA(0.922170,0.922170,0.922170,1.000000)",
           "font_name" : "<System>",
           "spellchecking_type" : "default",
           "class" : "TextView",
           "name" : "console",
           "flex" : "WH"
         },
-        "selected" : false
+        "selected" : true
       }
     ],
     "frame" : "{{0, 0}, {320, 480}}",
     "class" : "View",
     "attributes" : {
-      "name" : "",
+      "border_color" : "RGBA(0.000000,0.000000,0.000000,1.000000)",
       "enabled" : true,
       "background_color" : "RGBA(0.007075,0.007075,0.007075,1.000000)",
+      "name" : "",
       "tint_color" : "RGBA(1.000000,0.274510,0.274510,1.000000)",
-      "border_color" : "RGBA(0.000000,0.000000,0.000000,1.000000)",
       "flex" : ""
     },
     "selected" : false
