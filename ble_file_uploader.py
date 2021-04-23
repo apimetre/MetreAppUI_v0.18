@@ -403,8 +403,11 @@ class BleUploader():
             self.ble_status_icon_.background_color = 'white'
             self.v_['ble_status'].text = ''
             
-            out_msg_txt =json.dumps({"cmd":"set_ble_state","active":False})
-            cmd_fn(out_msg_txt, "set_ble_state", show_progress = False)
+            try:
+                out_msg_txt =json.dumps({"cmd":"set_ble_state","active":False})
+                cmd_fn(out_msg_txt, "set_ble_state", show_progress = False)
+            except:
+                print('Failed to set state')
 
             #out_msg_tone =json.dumps({"cmd": "avr", "payload": { "cmd": "tone", "freq":"1000", "duration":"1000" }})
             #cmd_fn(out_msg_tone, show_progress = False)
