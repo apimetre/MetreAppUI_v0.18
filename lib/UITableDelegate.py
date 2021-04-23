@@ -21,7 +21,7 @@ class ResultsTable(object):
 		for i in self.etime:
 			dt_list.append(i.strftime("%b %d, %Y, %I:%M %p"))		
 		for i in self.ac:
-			results.append(dt_list[np.where(self.ac == self.ac[i])] + '     ' + round(self.ac[i], 1) + ' ppm')
+			results.append(dt_list[np.where(self.ac == i)[0][0]] + '      ' + str(round(i, 1)) + ' ppm')
 		self.table_items = results        
 		self.list_source = ui.ListDataSource(self.table_items)
 		self.table.data_source = self.list_source
