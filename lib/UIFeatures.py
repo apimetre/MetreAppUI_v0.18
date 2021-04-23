@@ -22,7 +22,7 @@ class ConsoleAlert():
         self.field.y = self.view.height * 0.12
         self.field.x = self.view.width * 0.25
         self.field.width = self.view.width * 0.5
-        self.field.height = self.view.height * 0.17
+        self.field.height = self.view.height * 0.57
         self.button = ui.Button(title='X', action=self.tap_to_close)
         self.button.y = self.field.y
         self.button.x = self.field.x
