@@ -54,7 +54,6 @@ class MainView(ui.View):
         self.v = ui.load_view('mainview')
         self.v.frame = self.bounds
         self.v.flex = 'WH'
-
         
         # Console
         self.app_console = self.v['console']
@@ -142,8 +141,8 @@ class MainView(ui.View):
 
                 if sender.title =='Help':
                     help_page = pushed_view['toolbarview']
-                    hview = ui.load_view('toolbar')
-                    self.add_subview(hview)
+                    #hview = ui.load_view('toolbar')
+                    #self.add_subview(hview)
                     inst_page = hview['online_instructions']
                     qa_page = hview['online_qa']
                     recover_page = hview['recover_button']
@@ -395,6 +394,6 @@ if __name__ == '__main__':
     app = AppSingleLaunch("MetreAce Nav")
     if not app.is_active():
         nav_view = NavView(app).nav
-        nav_view.tint_color =  '#494949'                                   
+        view.tint_color =  '#494949'                                   
         app.will_present(nav_view)
         nav_view.present()
