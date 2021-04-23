@@ -32,6 +32,7 @@ from lib.UISummaryDelegate import SummaryDelegate
 from lib.UIBleDelegate import BleDelegate, loading_html, updating_html, nolog_html, getPlot
 from lib.UIHelpDelegate import HelpDelegate
 from lib.UIFeatures import ProgressBar, ConsoleAlert
+from lib.UITableDelegate import ResultsTable
 from app_single_launch import AppSingleLaunch
 
 # Using single launch lock as suggested in
@@ -116,7 +117,8 @@ class MainView2(ui.View):
         #ConsoleAlert('Insert mouthpiece to connect your MetreAce and follow the instructions on the MetreAce display. CONNECT once MetreAce readys "UPLOAD rdy', v)
         
         self.getData()
-        #
+        self.results_table = self.v['results_table']
+        ResultsTable(self.v, self.results_table, self.varray)
         self.vbutton.alpha = 1
         self.vbutton.action = self.popUpView
         #
