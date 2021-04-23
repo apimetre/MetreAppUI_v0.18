@@ -145,9 +145,9 @@ class MainView(ui.View):
                     help_page = pushed_view['toolbarview']
                     hview = ui.load_view('toolbar')
                     #self.add_subview(hview)
-                    inst_page = help_page['online_instructions']
-                    qa_page = help_page['online_qa']
-                    recover_page = help_page['recover_button']
+                    inst_page = pushed_view['online_instructions']
+                    qa_page = pushed_view['online_qa']
+                    recover_page = pushed_view['recover_button']
                     help_delegate = HelpDelegate(help_page, inst_page, qa_page, recover_page)
                     #hview.present()
                     
