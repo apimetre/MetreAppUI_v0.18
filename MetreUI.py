@@ -248,7 +248,7 @@ class MainView2(ui.View):
     
     def getData(self):
         
-        with open('log/log_003.json') as json_file:
+        with open(self.cwd + '/log/log_003.json') as json_file:
             self.log = json.load(json_file)
         self.etime = []
         self.weektime = []
@@ -331,7 +331,7 @@ class MainView2(ui.View):
         time.sleep(3)
         
         try:
-            with open('log/timezone_settings.json') as f:
+            with open(self.cwd + '/log/timezone_settings.json') as f:
                 tzsource = json.loads(f)
                 tz = 'US/Pacific'
         
@@ -379,7 +379,7 @@ class MainView2(ui.View):
                                   'Instr': response_json['instrument']}
                        for key, value in self.log.items():
                           self.log[key].append(newlog[key])
-                       with open("log/log_003.json", "w") as outfile:
+                       with open(self.cwd + "/log/log_003.json", "w") as outfile:
                           json.dump(self.log, outfile)
                        self.getData()
                                             
