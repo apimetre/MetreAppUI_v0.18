@@ -333,25 +333,25 @@ class MainView(ui.View):
                    response_json = json.loads(response.text)
                    pt.join()
                    process_done = True
-                   try:
-                       self.app_console.text = 'Results from ' + dt + ': ' + response_json['pred_content']
-                       print(response_json['pred_content'])
-                       self.main_progress_bar.update_progress_bar(0.92)
-                       newlog = {'Etime': response_json['refnum'],
-                                  'DateTime': response_json['DateTime'],
-                                  'Acetone': float(response_json['Acetone']),
-                                  'Sensor': response_json['sensor'],
-                                  'Instr': response_json['instrument']}
-                       for key, value in self.log.items():
-                          self.log[key].append(newlog[key])
-                       with open(self.cwd + "/log/log_003.json", "w") as outfile:
-                          json.dump(self.log, outfile)
-                       self.getData()
-                       self.main_progress_bar.update_progress_bar(0.95)
-                       ResultsTable(self.v, self.results_table, self.acetone, self.etime)                       
-                       self.main_progress_bar.update_progress_bar(1)
-                   except:
-                       self.app_console.text = 'Oops...something was wrong with the test from ' + dt + ' and it could not be processed'
+                   #try:
+                   self.app_console.text = 'Results from ' + dt + ': ' + response_json['pred_content']
+                   print(response_json['pred_content'])
+                   self.main_progress_bar.update_progress_bar(0.92)
+                   newlog = {'Etime': response_json['refnum'],
+                              'DateTime': response_json['DateTime'],
+                              'Acetone': float(response_json['Acetone']),
+                              'Sensor': response_json['sensor'],
+                              'Instr': response_json['instrument']}
+                   for key, value in self.log.items():
+                      self.log[key].append(newlog[key])
+                   with open(self.cwd + "/log/log_003.json", "w") as outfile:
+                      json.dump(self.log, outfile)
+                   self.getData()
+                   self.main_progress_bar.update_progress_bar(0.95)
+                   ResultsTable(self.v, self.results_table, self.acetone, self.etime)                       
+                   self.main_progress_bar.update_progress_bar(1)
+                   #except:
+                   #    self.app_console.text = 'Oops...something was wrong with the test from ' + dt + ' and it could not be processed'
                    time.sleep(1)
                    shutil.move(source_path + file, self.cwd +'/data_files/processed_files/' + file)
                else:
