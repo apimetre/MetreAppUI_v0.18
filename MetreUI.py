@@ -72,7 +72,7 @@ class MainView(ui.View):
         # Status bar
         self.fillbar = self.v['fill_bar']
         self.fillbar_outline = self.v['background']
-        self.fillbar.x = 31.1
+        # self.fillbar.x = 31.1
         self.fullbar = self.fillbar_outline.width
         
         # Version label
@@ -263,7 +263,7 @@ class MainView(ui.View):
     ########################################
     
     def main(self):
-                                            
+        self.ble_status.alpha = 0.5                                           
         self.main_progress_bar =ProgressBar(self.fillbar, self.fillbar_outline, self.fullbar)
         global process_done
         process_done = False
@@ -370,6 +370,7 @@ class MainView(ui.View):
         self.app_console.alpha = 0
         self.app_console.text = ''
         self.start_button.alpha = 1
+        self.ble_status.alpha = 1
         self.ble_status.text = 'CONNECT'
 
 
