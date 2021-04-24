@@ -202,7 +202,7 @@ class MainView(ui.View):
                     print("UI senses it is disconnected")
                     time.sleep(0.5)
                     self.app_console.text = 'Bluetooth connection lost. Reinsert mouthpiece to try again'
-                    self.ble_icon_path = 'images/ble_off.png'
+                    ble_icon_path = 'images/ble_off.png'
                     self.ble_status_icon.image = ui.Image.named(ble_icon_path)
                     self.ble_status_icon.background_color = 'black'
                     self.ble_status.text= 'CONNECT'
