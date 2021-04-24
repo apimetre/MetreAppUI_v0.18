@@ -98,7 +98,7 @@ class MainView(ui.View):
         # Set up UI Functions
         self.getData()
         self.results_table = self.v['results_table']
-        ResultsTable(self.v, self.results_table, self.acetone, self.etime)
+        self.restable_inst = ResultsTable(self.v, self.results_table, self.acetone, self.etime)
         self.start_button.action = self.bleStatus
         self.add_subview(self.v)
         
@@ -350,7 +350,7 @@ class MainView(ui.View):
                    print(self.acetone)
                    self.main_progress_bar.update_progress_bar(0.95)
                    self.results_table = self.v['results_table']
-                   ResultsTable.update_table(self.acetone, self.etime)                        
+                   self.restable_inst.update_table(self.acetone, self.etime)                        
                    self.main_progress_bar.update_progress_bar(1)
                    #except:
                    #    self.app_console.text = 'Oops...something was wrong with the test from ' + dt + ' and it could not be processed'
@@ -360,7 +360,7 @@ class MainView(ui.View):
                    continue
                time.sleep(1)
         self.getData()
-        ResultsTable.update_table(self.acetone, self.etime)                                     
+        self.restable_inst.update_table(self.acetone, self.etime)                                     
         self.fillbar.alpha =0
         self.fillbar_outline.alpha = 0
         self.main_progress_bar.update_progress_bar(0)
