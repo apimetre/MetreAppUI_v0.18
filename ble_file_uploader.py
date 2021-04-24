@@ -361,14 +361,17 @@ class BleUploader():
                                     print('Sent move command')
                                     if upload_size == file_size:
                                         print('upload and file size are the same size')
+                                        out_msg_del =json.dumps({"cmd": "remove", "path":"/sd/" + file})
+                                        r_del, counter = cmd_fn(out_msg_del, "remove", show_progress = True, cmd_counter = counter, warning = True)      
+                                        print('Sent remove command here')
                                     else:
                                         print('FILE IS THE WRONG SIZE')
                                         size_diff = file_size - upload_size
                                         file_wrongsize.append(file)
                                         file_wrongsize.append(size_diff)
-                                    out_msg_del =json.dumps({"cmd": "remove", "path":     "/sd/" + file})
-                                    r_del, counter = cmd_fn(out_msg_del, "remove", show_progress = True, cmd_counter = counter, warning = True)
-                                    print('Sent remove command')
+                                        out_msg_del =json.dumps({"cmd": "remove", "path":"/sd/" + file})
+                                        r_del, counter = cmd_fn(out_msg_del, "remove", show_progress = True, cmd_counter = counter, warning = True)
+                                    print('Got past else statement')
                                     
                                     if file.endswith('bin'):
                                         counter = counter + 1
