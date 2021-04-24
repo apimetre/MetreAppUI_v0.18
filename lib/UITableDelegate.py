@@ -26,7 +26,7 @@ class ResultsTable(object):
 		self.list_source = ui.ListDataSource(self.table_items)
 		self.table.data_source = self.list_source
 	def update_table(self, new_ac_res, new_etime_res):
-
+		self.table.reload()
 		dt_list = []
 		results = []
 		for i in new_etime_res:
