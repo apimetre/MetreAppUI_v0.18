@@ -248,6 +248,7 @@ class BleUploader():
               
         # HAVE A MESSAGE IF NO FILES READY TO BE UPLOADED
             self.ble_status_icon_.background_color = 'orange'
+            self.v_['ble_status'].alpha = 0.5
             self.console_box_.text = 'Found ' + str(len(file_list)) + ' test files on your MetreAce'
             time.sleep(0.5)
             
