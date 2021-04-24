@@ -95,11 +95,13 @@ class BleDelegate(object):
 		self.selector.y = self.table.y - 30
 		self.selector.x = self.table.x - 10
 		self.selector.alignment = ui.ALIGN_LEFT
+		self.selector.textcolor = 'white'
 		self.subview.add_subview(self.selector)
 		
 		self.time_selector = ui.Button(title = 'Choose a timezone ', action = self.save_time)
 		self.time_selector.y = self.dt_table.y - 30
 		self.time_selector.x = self.dt_table.x - 10
+		self.time_selector.textcolor = 'white'
 		self.time_selector.alignment = ui.ALIGN_LEFT
 		self.subview.add_subview(self.time_selector)
 		
