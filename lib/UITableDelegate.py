@@ -25,4 +25,13 @@ class ResultsTable(object):
 		self.table_items = results        
 		self.list_source = ui.ListDataSource(self.table_items)
 		self.table.data_source = self.list_source
-        
+	def update_table(self, new_ac_res, new_etime_res):
+
+		dt_list = []
+		results = []
+		for i in new_etime_res:
+			dt_list.append(i.strftime("%b %d, %Y, %I:%M %p"))		
+		for i in new_ac_res:
+			results.append(dt_list[np.where(self.ac == i)[0][0]] + '      ' + str(round(i, 1)) + ' ppm')
+		self.table.data_source.items = ui.ListDataSource(results)
+	
