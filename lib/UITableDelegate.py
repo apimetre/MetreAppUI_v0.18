@@ -32,6 +32,6 @@ class ResultsTable(object):
 		for i in new_etime_res:
 			dt_list.append(i.strftime("%b %d, %Y, %I:%M %p"))		
 		for i in new_ac_res:
-			results.append(dt_list[np.where(self.ac == i)[0][0]] + '      ' + str(round(i, 1)) + ' ppm')
+			results.append(dt_list[np.where(new_ac_res == i)[0][0]] + '      ' + str(round(i, 1)) + ' ppm')
 		self.table.data_source =  ui.ListDataSource(results)
 	
