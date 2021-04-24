@@ -45,7 +45,7 @@ class MainView(ui.View):
     def __init__(self):
     #def __init__(self, app: AppSingleLaunch):
         #self.app = app
-        self.name = "MetreAce_Home"
+        self.name = "MetreAce Home"
         self.flex = 'WH'
         #self.tint_color = '#494949'
         self.background_color = 'black'
