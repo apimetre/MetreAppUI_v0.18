@@ -33,5 +33,5 @@ class ResultsTable(object):
 			dt_list.append(i.strftime("%b %d, %Y, %I:%M %p"))		
 		for i in new_ac_res:
 			results.append(dt_list[np.where(new_ac_res == i)[0][0]] + '      ' + str(round(i, 1)) + ' ppm')
-		self.table.data_source =  ui.ListDataSource(results)
+		self.table.data_source =  ui.ListDataSource(results.reverse())
 	
