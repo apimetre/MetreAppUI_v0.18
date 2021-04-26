@@ -23,7 +23,7 @@ class ResultsTable(object):
 		for i in self.ac:
 			results.append(dt_list[np.where(self.ac == i)[0][0]] + '      ' + str(round(i, 1)) + ' ppm')
 		self.table_items = results        
-		self.list_source = ui.ListDataSource(self.table_items)
+		self.list_source = ui.ListDataSource(reversed(self.table_items))
 		self.table.data_source = self.list_source
 	def update_table(self, new_ac_res, new_etime_res):
 		self.table.reload()
@@ -33,5 +33,5 @@ class ResultsTable(object):
 			dt_list.append(i.strftime("%b %d, %Y, %I:%M %p"))		
 		for i in new_ac_res:
 			results.append(dt_list[np.where(new_ac_res == i)[0][0]] + '      ' + str(round(i, 1)) + ' ppm')
-		self.table.data_source =  ui.ListDataSource(results.reverse())
+		self.table.data_source =  ui.ListDataSource(reversed(results))
 	
