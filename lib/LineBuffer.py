@@ -35,7 +35,8 @@ class LineBuffer():
             event = {'post':json.dumps({'src':self.buffer_name, 'ack':'log', 'ok':True, 'resp':{'file_path':self.logfile_path}})}
             self.event_queue.append(event)
         # print(hexlify(line + b'\n'))
-        print('.', end='')
+        if self.DEBUG:
+            print('.', end='')
         self.logfile.write(line + b'\n')
 
     def end_log(self, line):
