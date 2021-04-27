@@ -28,7 +28,7 @@ class ConsoleAlert():
         self.button.x = self.field.x
         self.view.add_subview(self.field)
         self.view.add_subview(self.button)
-        print(self.message)
+        #print(self.message)
         ui.delay(self.close_window, 5) 
         
         
