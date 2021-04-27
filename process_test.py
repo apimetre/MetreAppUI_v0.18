@@ -5,7 +5,7 @@ import datetime as datetime
 import time
 import math
 
-def process(data_dict, dt_):
+def process(data_dict, dt_, debug):
     
     def running_mean(x, N):
         cumsum = np.cumsum(np.insert(x, 0, 0))
@@ -95,8 +95,9 @@ def process(data_dict, dt_):
     data_dict['Peak_neg_t_ix'] = float(peak_neg_t_ix)
     
     pos_data_mV = signal_data[peak_neg_t_ix:]
-    print('neg peak ix', peak_neg_t_ix)
-    print('length of pos data mv', len(pos_data_mV))
+    if debug:
+        print('neg peak ix', peak_neg_t_ix)
+        print('length of pos data mv', len(pos_data_mV))
     try:
         cross_t_ix = np.amin(np.where(pos_data_mV >= 0))
         cross_t = peak_neg_t + cross_t_ix/sample_rate
