@@ -315,7 +315,7 @@ class MainView(ui.View):
                    process_done = False
                    with open(json_path) as f:
                        data_dict = json.load(f)
-                   data_dict_to_send = process_test.process(data_dict, dt)
+                   data_dict_to_send = process_test.process(data_dict, dt, DEBUG)
                    url = 'https://us-central1-metre3-1600021174892.cloudfunctions.net/metre-7500'
                    data_dict_to_send['App_Version'] = APP_VERSION
                    json_text = json.dumps(data_dict_to_send)
