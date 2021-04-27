@@ -1,3 +1,5 @@
+DEBUG = False
+
 ## Python imports
 import os
 import requests
@@ -83,16 +85,25 @@ class MainView(ui.View):
         self.cwd = os.getcwd()
         on_main_thread(console.set_idle_timer_disabled)(True)
         
-        # Download Single Launch Lock if it's not already installed
-        print(self.cwd)
+        
         root_dir, metre_dir = self.cwd.split('MetreiOS')
-        print(root_dir)
+        if DEBUG:
+            print('This is self.cwd: ' + self.cwd)
+            print('This is root_dir: ' + root_dir)
+            
+        # Download Single Launch Lock if it's not already installed
         check_path = root_dir + 'site-packages/single_launch.lock'
         if os.path.exists(check_path):
-        	print('path already exists')
+            if DEBUG:
+                print('single_launch.lock already exists')
+            else:
+                print('')
         else:
-        	shutil.copy(self.cwd + '/resources/single_launch.lock', check_path )
-        	print('moved')
+            shutil.copy(self.cwd + '/resources/single_launch.lock', check_path )
+            if DEBUG:
+                print('moved copy of single_launch.lock')
+            else:
+                print('')
 
 
         # Set up UI Functions
@@ -108,15 +119,22 @@ class MainView(ui.View):
         self.files_to_upload = os.listdir(self.cwd + '/data_files/converted_files/')
 
         # Process pre-uploaded tests (if available)
+
+        
+    def init_check(self):
+        if DEBUG:
+            print("this is the size of files to upload")
+            print(len(self.files_to_upload))
         if len(self.files_to_upload) >=2:
+            self.app_console.text = 'Beginning Upload'
+            self.main()
             self.start_button.alpha = 0.5
             self.ble_status.text = ''
-            self.main()  
+            #self.main()  
         else:
             #self.app_console.text = 'Once MetreAce reads "UPLOAD rdy", push CONNECT (above) to initiate data transfer from MetreAce'
             self.ble_status.text = 'CONNECT'
-        
-        
+            
     def will_close(self) -> None:
         self.app.will_close()
 
@@ -175,7 +193,7 @@ class MainView(ui.View):
     
         if not loaded:
             self.ble_status.text= 'Connecting...'
-            ble_file_uploader = BleUploader(self.progress_bar, self.app_console, self.ble_status_icon, self.v, APP_VERSION)
+            ble_file_uploader = BleUploader(self.progress_bar, self.app_console, self.ble_status_icon, self.v, APP_VERSION, DEBUG)
             ready_status = ble_file_uploader.execute_transfer()
             
             if ready_status:
@@ -199,7 +217,8 @@ class MainView(ui.View):
                     self.progress_bar.fillbar_outline_.alpha = 0
                     self.fillbar.alpha = 0
                 else:
-                    print("UI senses it is disconnected")
+                    if DEBUG:
+                        print("UI senses it is disconnected")
                     time.sleep(0.5)
                     self.app_console.text = 'Bluetooth connection lost. Reinsert mouthpiece to try again'
                     ble_icon_path = 'images/ble_off.png'
@@ -241,25 +260,6 @@ class MainView(ui.View):
         if len(self.acetone) <=0:
             self.varray = []
         
-    
-    # Command for larger Bokeh plot pop-up
-    def popUpView(self,sender):
-        try:
-            url = 'https://us-central1-metre3-1600021174892.cloudfunctions.net/get_bokeh'
-            newWindow = ui.WebView()
-            newWindow.load_html(loading_html)
-            logData = json.dumps(self.log)
-            try:
-                tzData = json.loads(self.cwd + '/log/timezone_settings.json')
-            except:
-                tzData = json.dumps({'timezone': 'US/Pacific'})
-            response = requests.post(url, files = [('json_file', ('log.json', logData, 'application/json')), ('tz_info', ('tz.json', tzData, 'application/json'))])
-            
-            newWindow.load_html(response.text)
-            newWindow.present()
-        except:
-            newWindow.load_html(nolog_html)
-
     ########################################
     
     def main(self):
@@ -283,16 +283,16 @@ class MainView(ui.View):
         for file in all_src_files:
             if ".gitkeep" not in file:
                 files.append(file)
-        print("these are the files")
-        print(files)
+        if DEBUG:
+            print("these are the files in converted_files: " + files)
         numOfFiles = len(files)
         self.app_console.alpha = 1
         if numOfFiles >1:
-               self.app_console.text = str(numOfFiles-1) + ' breath tests are ready to be processed. Beginning data processing...'
+            self.app_console.text = str(numOfFiles-1) + ' breath tests are ready to be processed. Beginning data processing...'
         elif numOfFiles == 1:
-               self.app_console.text = '1 breath test is ready to be processed. Beginning data processing...'
+            self.app_console.text = '1 breath test is ready to be processed. Beginning data processing...'
         else:
-               self.app_console.text = 'No breath tests are ready to be processed at this time'
+            self.app_console.text = 'No breath tests are ready to be processed at this time'
         time.sleep(3)
         
         try:
@@ -308,7 +308,8 @@ class MainView(ui.View):
                if fnmatch.fnmatch(file, '*.json'):
     
                    dt = datetime.datetime.fromtimestamp(int(file.split('-')[0])).astimezone(timezone(tz)).strftime('%b %d, %Y, %I:%M %p')
-                   print('Beginning Analysis of test from ' + dt)
+                   if DEBUG:
+                       print('Beginning Analysis of test from ' + dt)
                    json_path = source_path + '/'+ file
                    self.main_progress_bar.update_progress_bar(0)
                    process_done = False
@@ -322,20 +323,21 @@ class MainView(ui.View):
                    self.app_console.text = 'Interpretting results from test from ' + dt +'. This may take a few moments...'
                    pt = threading.Thread(target = animate_bar) # don't do this unless u start a parallel thread to send request
                    pt.start()
-    
-                   print('sending to cloud')
+                   if DEBUG:
+                       print('sending to cloud')
                    start = time.time()
                    response = requests.post(url, files = [('json_file', ('test.json', json_text, 'application/json'))])
-                   #pt.join()
                    process_done = True
                    elapsedtime = time.time()-start
-                   print('received response--response time ' + str(elapsedtime))
+                   if DEBUG: 
+                       print('received response--response time ' + str(elapsedtime))
                    response_json = json.loads(response.text)
                    pt.join()
                    process_done = True
                    try:
                        self.app_console.text = 'Results from ' + dt + ': ' + response_json['pred_content']
-                       print(response_json['pred_content'])
+                       if DEBUG:
+                            print(response_json['pred_content'])
                        self.main_progress_bar.update_progress_bar(0.92)
                        newlog = {'Etime': response_json['refnum'],
                                   'DateTime': response_json['DateTime'],
@@ -347,7 +349,8 @@ class MainView(ui.View):
                        with open(self.cwd + "/log/log_003.json", "w") as outfile:
                           json.dump(self.log, outfile)
                        self.getData()
-                       print(self.acetone)
+                       if DEBUG:
+                            print(self.acetone)
                        self.main_progress_bar.update_progress_bar(0.95)
                        self.results_table = self.v['results_table']
                        self.restable_inst.update_table(self.acetone, self.etime)                        
@@ -380,12 +383,17 @@ class NavView(ui.View):
         self.tint_color =  '#494949'  
         self.name = "MetreAce Nav"
         self.flex = 'WH'
-        self.nav = ui.NavigationView(MainView())
+        self.mainscript = MainView()
+        self.nav = ui.NavigationView(self.mainscript)
+
+        
 
 if __name__ == '__main__':
     app = AppSingleLaunch("MetreAce Nav")
     if not app.is_active():
-        nav_view = NavView(app).nav
+        nav_class = NavView(app)
+        nav_view = nav_class.nav
         nav_view.tint_color =  '#494949'                                   
         app.will_present(nav_view)
         nav_view.present()
+        nav_class.mainscript.init_check()
