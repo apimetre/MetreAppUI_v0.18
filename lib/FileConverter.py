@@ -103,8 +103,8 @@ class FileConverter():
     
     def match_unpaired(self):
         all_unpaired_uploads = os.listdir(self.unpaired_file_dir)
-        print('THESE ARE THE UNPAIRED UPLOADS')
-        print(all_unpaired_uploads)
+        #print('THESE ARE THE UNPAIRED UPLOADS')
+        #print(all_unpaired_uploads)
         for file in all_unpaired_uploads:
             if 'bin' in file:
                 id_num, ext = file.split('.')
