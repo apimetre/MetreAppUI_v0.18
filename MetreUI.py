@@ -273,7 +273,7 @@ class MainView(ui.View):
                 if process_done:
                     break
                 cloud_progress_bar.update_progress_bar(0.005*i + 0.15)
-                print(i)
+                if DEBUG: print(i)
                 time.sleep(0.5)
 
     
