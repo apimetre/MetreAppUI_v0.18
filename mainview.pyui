@@ -210,7 +210,7 @@
           "uuid" : "2E78B5C8-60A3-47BB-B133-AE88B8DBF078",
           "font_size" : 17,
           "frame" : "{{60, 140}, {200, 200}}",
-          "editable" : true,
+          "editable" : false,
           "alignment" : "left",
           "autocorrection_type" : "default",
           "alpha" : 0,
