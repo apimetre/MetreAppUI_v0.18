@@ -315,26 +315,27 @@ class MainView(ui.View):
                    process_done = False
                    with open(json_path) as f:
                        data_dict = json.load(f)
-                   data_dict_to_send = process_test.process(data_dict, dt, DEBUG)
-                   url = 'https://us-central1-metre3-1600021174892.cloudfunctions.net/metre-7500'
-                   data_dict_to_send['App_Version'] = APP_VERSION
-                   json_text = json.dumps(data_dict_to_send)
-                   self.main_progress_bar.update_progress_bar(0.1)
-                   self.app_console.text = 'Interpretting results from test from ' + dt +'. This may take a few moments...'
-                   pt = threading.Thread(target = animate_bar) # don't do this unless u start a parallel thread to send request
-                   pt.start()
-                   if DEBUG:
-                       print('sending to cloud')
-                   start = time.time()
-                   response = requests.post(url, files = [('json_file', ('test.json', json_text, 'application/json'))])
-                   process_done = True
-                   elapsedtime = time.time()-start
-                   if DEBUG: 
-                       print('received response--response time ' + str(elapsedtime))
-                   response_json = json.loads(response.text)
-                   pt.join()
-                   process_done = True
                    try:
+                       data_dict_to_send = process_test.process(data_dict, dt, DEBUG)
+                       url = 'https://us-central1-metre3-1600021174892.cloudfunctions.net/metre-7500'
+                       data_dict_to_send['App_Version'] = APP_VERSION
+                       json_text = json.dumps(data_dict_to_send)
+                       self.main_progress_bar.update_progress_bar(0.1)
+                       self.app_console.text = 'Interpretting results from test from ' + dt +'. This may take a few moments...'
+                       pt = threading.Thread(target = animate_bar) # don't do this unless u start a parallel thread to send request
+                       pt.start()
+                       if DEBUG:
+                           print('sending to cloud')
+                       start = time.time()
+                       response = requests.post(url, files = [('json_file', ('test.json', json_text, 'application/json'))])
+                       process_done = True
+                       elapsedtime = time.time()-start
+                       if DEBUG: 
+                           print('received response--response time ' + str(elapsedtime))
+                       response_json = json.loads(response.text)
+                       pt.join()
+                       process_done = True
+                       
                        self.app_console.text = 'Results from ' + dt + ': ' + response_json['pred_content']
                        if DEBUG:
                             print(response_json['pred_content'])
@@ -355,10 +356,10 @@ class MainView(ui.View):
                        self.results_table = self.v['results_table']
                        self.restable_inst.update_table(self.acetone, self.etime)                        
                        self.main_progress_bar.update_progress_bar(1)
-                   except:
+                    except:
                        self.app_console.text = 'The test from ' + dt + ' could not be processed.'
-                   time.sleep(1)
-                   shutil.move(source_path + file, self.cwd +'/data_files/processed_files/' + file)
+                       time.sleep(1)
+                    shutil.move(source_path + file, self.cwd +'/data_files/processed_files/' + file)
                else:
                    continue
                time.sleep(1)
