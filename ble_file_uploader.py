@@ -20,7 +20,6 @@ class BleUploader():
         self.progress_bar_ = progress_bar_
         self.console_box_ = console_box_
         self.ble_status_icon_ = ble_status_icon_
-	@@ -42,6 +42,7 @@ def __init__(self, progress_bar_, console_box_, ble_status_icon_, v_, version_id
         self.DEBUG = False
         self.CONSOLE_WIDTH = 140
         self.INDENT_STR = '        '
