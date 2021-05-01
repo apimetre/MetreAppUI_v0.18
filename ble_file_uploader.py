@@ -1,400 +1,241 @@
-DEBUG = False
-
-## Python imports
-import os
-import requests
-import shutil
-import numpy as np
-from io import BytesIO
-import datetime as datetime
 import time
+import datetime as datetime
 from pytz import timezone
-import json
-import threading
-import fnmatch
-import pprint
-import math
-from functools import partial
-import itertools
-import matplotlib.pyplot as plt
-from matplotlib.dates import num2date, date2num, num2epoch
-
 # Pythonista imports
-import ui
-import Image
+import cb
 import console
-from objc_util import on_main_thread
-
-
+import Image
 # Metre imports
-import process_test
-from ble_file_uploader import BleUploader
-from lib.UISummaryDelegate import SummaryDelegate
-from lib.UIBleDelegate import BleDelegate, BokehDelegate, loading_html, updating_html, nolog_html, getPlot
-from lib.UIHelpDelegate import HelpDelegate
-from lib.UIFeatures import ProgressBar, ConsoleAlert
-from lib.UITableDelegate import ResultsTable
-from app_single_launch import AppSingleLaunch
-
-# Using single launch lock as suggested in
-# https://forum.omz-software.com/topic/5440/prevent-duplicate-launch-from-shortcut/7
-
-APP_VERSION = 'v0.18'
+from lib.ParamsDb import ParamsDb
+from lib.ViewListView import ViewListView
+from lib.LineBuffer import LineBuffer
+from lib.PythonistaUartBleClient import PythonistaUartBleClient
+from lib.FileConverter import FileConverter
+from lib.UIFeatures import ConsoleAlert
+# Global constants
 
 
+class BleUploader():
+    def __init__(self, progress_bar_, console_box_, ble_status_icon_, v_, version_id):
+        self.progress_bar_ = progress_bar_
+        self.console_box_ = console_box_
+        self.ble_status_icon_ = ble_status_icon_
+	@@ -42,6 +42,7 @@ def __init__(self, progress_bar_, console_box_, ble_status_icon_, v_, version_id
+        self.DEBUG = False
+        self.CONSOLE_WIDTH = 140
+        self.INDENT_STR = '        '
 
-class MainView(ui.View):
-    def __init__(self):
-    #def __init__(self, app: AppSingleLaunch):
-        #self.app = app
-        self.name = "MetreAce Home"
-        self.flex = 'WH'
-        #self.tint_color = '#494949'
-        self.background_color = 'black'
-        
-        # Setup of UI Features
-        
-        self.v = ui.load_view('mainview')
-        self.v.frame = self.bounds
-        self.v.flex = 'WH'
-        
-        # Console
-        self.app_console = self.v['console']
-        self.app_console.alpha = 0
-       
-        
-        # Ble connection
-        self.start_button = self.v['start_button']
-        self.ble_icon = self.v['ble_icon']
-        self.ble_status_icon = self.v['ble_status_icon']
-        self.ble_status = self.v['ble_status']
-        ble_icon_path = 'images/ble_off.png'
-        self.ble_status_icon.image = ui.Image.named(ble_icon_path)
-                
-        # Status bar
-        self.fillbar = self.v['fill_bar']
-        self.fillbar_outline = self.v['background']
-        # self.fillbar.x = 31.1
-        self.fullbar = self.fillbar_outline.width
-        
-        # Version label
-        self.vlabel = self.v['vlabel']
-        self.vlabel.text = APP_VERSION
-        
-        # Setup
-        self.cwd = os.getcwd()
-        on_main_thread(console.set_idle_timer_disabled)(True)
-        
-        
-        root_dir, metre_dir = self.cwd.split('MetreiOS')
-        if DEBUG:
-            print('This is self.cwd: ' + self.cwd)
-            print('This is root_dir: ' + root_dir)
-            
-        # Download Single Launch Lock if it's not already installed
-        check_path = root_dir + 'site-packages/single_launch.lock'
-        if os.path.exists(check_path):
-            if DEBUG:
-                print('single_launch.lock already exists')
-            else:
-                print('')
-        else:
-            shutil.copy(self.cwd + '/resources/single_launch.lock', check_path )
-            if DEBUG:
-                print('moved copy of single_launch.lock')
-            else:
-                print('')
+        # Global variables
+        self.in_buf =b''
+	@@ -63,9 +64,10 @@ def __init__(self, progress_bar_, console_box_, ble_status_icon_, v_, version_id
+        self.py_ble_uart = PythonistaUartBleClient('py_ble', self.event_queue,    self.PERIPHERAL_PREAMBLE, self.py_ble_buffer, DEBUG=self.DEBUG)
+
+    def print_wrap(self, text, indent_str, len):
+        lines = textwrap.wrap(text, width=len, subsequent_indent=indent_str)
+        for line in lines:
+            print(line)
 
 
-        # Set up UI Functions
-        self.getData()
-        self.results_table = self.v['results_table']
-        self.restable_inst = ResultsTable(self.v, self.results_table, self.acetone, self.etime)
-        self.start_button.action = self.bleStatus
-        self.add_subview(self.v)
-        
-        # Implementation of navigation view/mainview
-        self.l = self.create_l_buttonItems('Settings','|','Results','|', 'Help')
-        self.left_button_items = self.l
-        self.files_to_upload = os.listdir(self.cwd + '/data_files/converted_files/')
 
-        # Process pre-uploaded tests (if available)
-
-        
-    def init_check(self):
-        if DEBUG:
-            print("this is the size of files to upload")
-            print(len(self.files_to_upload))
-        if len(self.files_to_upload) >=2:
-            self.app_console.text = 'Beginning Upload'
-            self.main()
-            self.start_button.alpha = 0.5
-            self.ble_status.text = ''
-            #self.main()  
-        else:
-            #self.app_console.text = 'Once MetreAce reads "UPLOAD rdy", push CONNECT (above) to initiate data transfer from MetreAce'
-            self.ble_status.text = 'CONNECT'
-            
-    def will_close(self) -> None:
-        self.app.will_close()
-
-    # This sets up main navigation view
-
-    def button_nav(self, sender):
-        def connect(a,b):
-            
-            if sender.title == a:
-                view_to_push = b
-                pushed_view = ui.load_view(view_to_push)
-                self.v.navigation_view.push_view(pushed_view)
-                    
-                if sender.title=='Settings':
-                    settings_page = pushed_view['view1']
-                    s_table=settings_page['tableview1']
-                    d_table = settings_page['dt_table']
-                    ble_delegate = BleDelegate(settings_page, s_table, d_table, self.cwd)
-                    
-                if sender.title=='Results':
-                    results_page = pushed_view['bokeh_bg']
-                    bview = ui.load_view('bokehview') 
-                    bokeh_delegate = BokehDelegate(pushed_view['webview1'], self.cwd)
-
-                if sender.title =='Help':
-                    help_page = pushed_view['toolbarview']
-                    hview = ui.load_view('toolbar')
-                    inst_page = pushed_view['online_instructions']
-                    qa_page = pushed_view['online_qa']
-                    recover_page = pushed_view['recover_button']
-                    help_delegate = HelpDelegate(hview, inst_page, qa_page, recover_page)
-
-                    
-        connect('Settings','file_view')
-        connect('Help','toolbar')
-        connect('Results','bokehview')
+	@@ -81,7 +83,8 @@ def execute_transfer(self):
+        while not self.py_ble_uart.peripheral:
+            if len(self.event_queue):
+                event = self.event_queue.pop()
+                print(f"event: {event}")
+        if self.py_ble_uart.peripheral:
+            self.console_box_.alpha =1
+            self.console_box_.text = ("Connecting to MetreAce instrument")
+	@@ -110,20 +113,16 @@ def calc_utc_offset(timeval):
+            dt1 = datetime.datetime.fromtimestamp(timeval).astimezone(timezone(tz))
+            dst_term_sec = is_dst(datetime.datetime(int(dt1.year), int(dt1.month), int(dt1.day)), tzone="US/Pacific")
+            tz_factor = int(tz_dict[tz]) - dst_term_sec/3600
+            print('THIS IS THE AMOUNT TO SUBTRACT from GMT interp in hours', tz_factor)
+            return int(tz_factor)
 
 
-    def create_l_buttonItems(self, *buttons):
-        items=[]
-        for b in buttons:
-            b=ui.ButtonItem(b)
-            b.tint_color='#494949'
-            b.action= self.button_nav
-            items.append(b)
-        return items
+        def cmd_fn(out_msg, cmd_type, show_progress = False, cmd_counter = 0, to_counter = 0, warning = False, to_max = 80):
+            global in_buf
+            #print(f"json_text: {out_msg}")
+            in_buf = (out_msg + '\n').encode('utf-8')
+            #print(in_buf)
 
-# This sets up the bluetooth upload
-    @ui.in_background
-    def bleStatus(self, sender):
-        self.progress_bar = ProgressBar(self.fillbar, self.fillbar_outline, self.fullbar)
-        self.start_button.alpha = 0.5
-        self.progress_bar.fillbar_outline_.alpha = 1
-        self.fillbar.alpha = 1
-        loaded = False
-    
-        if not loaded:
-            self.ble_status.text= 'Connecting...'
-            ble_file_uploader = BleUploader(self.progress_bar, self.app_console, self.ble_status_icon, self.v, APP_VERSION, DEBUG)
-            ready_status = ble_file_uploader.execute_transfer()
-            
-            if ready_status:
-                done = True
-                self.start_button.alpha = 0.25
-                self.ble_status.text = ''
-                
-                
-                # HERE is where you trigger the main function (i.e. after the button is pushed)
-                self.main()
-                self.start_button.alpha = 1
-                return done
-            else:
-                self.app_console.text = 'No breath tests are ready to be processed'
-                if ble_file_uploader.py_ble_uart.peripheral:
-                    ble_file_uploader.py_ble_uart.peripheral = False
-                    self.ble_icon_path = 'images/ble_off.png'
-                    self.ble_status_icon.image = ui.Image.named(ble_icon_path)
-                    self.ble_status.text= 'CONNECT'
-                    self.start_button.alpha = 1
-                    self.progress_bar.fillbar_outline_.alpha = 0
-                    self.fillbar.alpha = 0
-                else:
-                    if DEBUG:
-                        print("UI senses it is disconnected")
-                    time.sleep(0.5)
-                    self.app_console.text = 'Bluetooth connection lost. Reinsert mouthpiece to try again'
-                    ble_icon_path = 'images/ble_off.png'
-                    self.ble_status_icon.image = ui.Image.named(ble_icon_path)
-                    self.ble_status_icon.background_color = 'black'
-                    self.ble_status.text= 'CONNECT'
-                    self.start_button.alpha = 1
-                    self.progress_bar.fillbar_outline_.alpha = 0
-                    self.fillbar.alpha = 0
-            
-        else:
-            self.ble_icon_path = 'images/ble_disconnected.png'
-            ble_icon.image = ui.Image.named(ble_icon_path)
-            return done
-        
-    
-    def getData(self):
-        
-        with open(self.cwd + '/log/log_003.json') as json_file:
-            self.log = json.load(json_file)
-        self.etime = []
-        self.weektime = []
-        for val in self.log['Etime']:
-                tval = datetime.datetime.fromtimestamp(int(val))
-                year, weeknum = tval.strftime("%Y-%U").split('-')
-                weekcalc = str(year) + '-W' + str(weeknum)
-                day_of_week = datetime.datetime.strptime(weekcalc + '-1', "%Y-W%W-%w")
-                self.weektime.append(day_of_week)
-                self.etime.append(tval)
-        self.acetone = np.array(self.log['Acetone'])
-        dtDateTime = []
-        for i in range(0, len(self.log['DateTime'])):
-            dtDateTime.append(datetime.datetime.strptime(self.log['DateTime'][i], '%Y-%m-%d %H:%M:%S'))
-        vectorized = []
-    
-        for i in range(0, len(self.acetone)):
-                vectorized.append([self.weektime[i], self.acetone[i], dtDateTime[i]])
-                self.varray = np.array(vectorized)
-        if len(self.acetone) <=0:
-            self.varray = []
-        
-    ########################################
-    
-    def main(self):
-        self.ble_status.alpha = 0.5                                           
-        self.main_progress_bar =ProgressBar(self.fillbar, self.fillbar_outline, self.fullbar)
-        global process_done
-        process_done = False
-        def animate_bar():
-            cloud_progress_bar = ProgressBar(self.fillbar, self.fillbar_outline, self.fullbar)
-            for i in range(0, 100):
-                if process_done:
-                    break
-                cloud_progress_bar.update_progress_bar(0.005*i + 0.15)
-                if DEBUG: print(i)
-                time.sleep(0.5)
+            while True:
+                if self.py_ble_uart.peripheral:
+                    #print('self.py_ble_uart.peripheral connection made')
+                    #print(cmd_counter)
+                    try:
+                        if show_progress:
+                            if self.progress_bar_.fillbar_.width < 0.8:
+	@@ -133,24 +132,26 @@ def cmd_fn(out_msg, cmd_type, show_progress = False, cmd_counter = 0, to_counter
 
-    
-        source_path = self.cwd + '/data_files/converted_files/'
-        all_src_files = os.listdir(source_path)
-        files = []
-        for file in all_src_files:
-            if ".gitkeep" not in file:
-                files.append(file)
-        if DEBUG:
-            print("these are the files in converted_files: " + files)
-        numOfFiles = len(files)
-        self.app_console.alpha = 1
-        if numOfFiles >1:
-            self.app_console.text = str(numOfFiles-1) + ' breath tests are ready to be processed. Beginning data processing...'
-        elif numOfFiles == 1:
-            self.app_console.text = '1 breath test is ready to be processed. Beginning data processing...'
-        else:
-            self.app_console.text = 'No breath tests are ready to be processed at this time'
-        time.sleep(3)
-        
-        try:
-            with open(self.cwd + '/log/timezone_settings.json') as f:
-                tzsource = json.loads(f)
-                tz = 'US/Pacific'
-        
-        
-        except:
-                tz = 'US/Pacific'
-        
-        for file in files:
-               if fnmatch.fnmatch(file, '*.json'):
-    
-                   dt = datetime.datetime.fromtimestamp(int(file.split('-')[0])).astimezone(timezone(tz)).strftime('%b %d, %Y, %I:%M %p')
-                   if DEBUG:
-                       print('Beginning Analysis of test from ' + dt)
-                   json_path = source_path + '/'+ file
-                   self.main_progress_bar.update_progress_bar(0)
-                   process_done = False
-                   with open(json_path) as f:
-                       data_dict = json.load(f)
-                   try:
-                       data_dict_to_send = process_test.process(data_dict, dt, DEBUG)
-                       url = 'https://us-central1-metre3-1600021174892.cloudfunctions.net/metre-7500'
-                       data_dict_to_send['App_Version'] = APP_VERSION
-                       json_text = json.dumps(data_dict_to_send)
-                       self.main_progress_bar.update_progress_bar(0.1)
-                       self.app_console.text = 'Interpretting results from test from ' + dt +'. This may take a few moments...'
-                       pt = threading.Thread(target = animate_bar) # don't do this unless u start a parallel thread to send request
-                       pt.start()
-                       if DEBUG:
-                           print('sending to cloud')
-                       start = time.time()
-                       response = requests.post(url, files = [('json_file', ('test.json', json_text, 'application/json'))])
-                       process_done = True
-                       elapsedtime = time.time()-start
-                       if DEBUG: 
-                           print('received response--response time ' + str(elapsedtime))
-                       response_json = json.loads(response.text)
-                       pt.join()
-                       process_done = True
-                       
-                       self.app_console.text = 'Results from ' + dt + ': ' + response_json['pred_content']
-                       if DEBUG:
-                            print(response_json['pred_content'])
-                       self.main_progress_bar.update_progress_bar(0.92)
-                       newlog = {'Etime': response_json['refnum'],
-                                  'DateTime': response_json['DateTime'],
-                                  'Acetone': float(response_json['Acetone']),
-                                  'Sensor': response_json['sensor'],
-                                  'Instr': response_json['instrument']}
-                       for key, value in self.log.items():
-                          self.log[key].append(newlog[key])
-                       with open(self.cwd + "/log/log_003.json", "w") as outfile:
-                          json.dump(self.log, outfile)
-                       self.getData()
-                       if DEBUG:
-                            print(self.acetone)
-                       self.main_progress_bar.update_progress_bar(0.95)
-                       self.results_table = self.v['results_table']
-                       self.restable_inst.update_table(self.acetone, self.etime)                        
-                       self.main_progress_bar.update_progress_bar(1)
-                    except:
-                       self.app_console.text = 'The test from ' + dt + ' could not be processed.'
-                       time.sleep(1)
-                    shutil.move(source_path + file, self.cwd +'/data_files/processed_files/' + file)
-               else:
-                   continue
-               time.sleep(1)
-        self.getData()
-        self.restable_inst.update_table(self.acetone, self.etime)                                     
-        self.fillbar.alpha =0
-        self.fillbar_outline.alpha = 0
-        self.main_progress_bar.update_progress_bar(0)
-                                            
-        self.app_console.text = 'Test Processing and Upload Complete.'
-        time.sleep(3)
-        self.app_console.alpha = 0
-        self.app_console.text = ''
-        self.start_button.alpha = 1
-        self.ble_status.alpha = 1
-        self.ble_status.text = 'CONNECT'
+                    # Sends commands to buffer
+                        if len(in_buf):
+                            print('the length of in_buff is ', len(in_buf))
+                            in_chars = in_buf
+                            self.py_ble_buffer.buffer(in_chars)
+                            in_buf = ''
+                        # if events then process them
+                        while len(self.event_queue) and self.py_ble_uart.peripheral:
+                            print('processing events')
+                            event = self.event_queue.pop()
+
+                            if 'post' in event:
+                                response = json.loads(event['post'])
+                                print('recieved event post')
+                                if 'cmd' in response:
+                                    try:
+                                        self.py_ble_uart.write((event    ['post']+'\n').encode())
+                                                            # print(f"event: {event}")
+                                        self.print_wrap(f"event: {event}",   self.INDENT_STR, self.CONSOLE_WIDTH)
+                                        print('sent a post cmd')
+
+                                        continue
+                                    except:
+	@@ -159,20 +160,23 @@ def cmd_fn(out_msg, cmd_type, show_progress = False, cmd_counter = 0, to_counter
+
+                                else:
 
 
-class NavView(ui.View):
-    def __init__(self, app: AppSingleLaunch):
-        self.app = app
-        self.tint_color =  '#494949'  
-        self.name = "MetreAce Nav"
-        self.flex = 'WH'
-        self.mainscript = MainView()
-        self.nav = ui.NavigationView(self.mainscript)
+                                    print('cmd not in post')
+                                    try:
+                                        print('printing event response')
+                                        self.print_wrap(f"event: {response}",    self.INDENT_STR, self.CONSOLE_WIDTH)
+                                        if cmd_type in response['ack']:
+                                            return response['resp'], cmd_counter
+                                        else:
+                                            continue
+                                    except:
+                                        print('could not get event response')
+                                        continue
+                            else:
+                                print('No post in event')
+                                self.print_wrap(f"event: {event}", self.INDENT_STR,   self.CONSOLE_WIDTH)
 
-        
 
-if __name__ == '__main__':
-    app = AppSingleLaunch("MetreAce Nav")
-    if not app.is_active():
-        nav_class = NavView(app)
-        nav_view = nav_class.nav
-        nav_view.tint_color =  '#494949'                                   
-        app.will_present(nav_view)
-        nav_view.present()
-        nav_class.mainscript.init_check()
+	@@ -183,7 +187,8 @@ def cmd_fn(out_msg, cmd_type, show_progress = False, cmd_counter = 0, to_counter
+                    time.sleep(0.2)
+                    cmd_counter = cmd_counter + 1
+                    to_counter = to_counter + 1
+                    print('cmd_counter', cmd_counter)
+                    if warning and to_counter > to_max:
+                        self.console_box_.text = "Ooops. MetreAce needs to be restarted. \n Eject mouthpiece, close the phone app, and try again"
+                        break
+	@@ -197,7 +202,8 @@ def cmd_fn(out_msg, cmd_type, show_progress = False, cmd_counter = 0, to_counter
+        if self.py_ble_uart.peripheral:
+            self.v_['ble_status'].text = 'Connected'
+            self.console_box_.text = "Connected"
+            print('will be using ' + self.cwd + '/data_files/dat_files/ as current working directory for writing log files')
+            global counter
+            counter = 0
+            time.sleep(0.2)
+	@@ -262,20 +268,24 @@ def cmd_fn(out_msg, cmd_type, show_progress = False, cmd_counter = 0, to_counter
+
+                timeout_counter = 1
+                if file.startswith('._'):
+                    print('I SEE ' + file)
+                    out_msg_del_e =json.dumps({"cmd": "remove", "path":     "/sd/" + file})
+                    r_del, counter = cmd_fn(out_msg_del_e, "remove", show_progress = False, warning = True, to_max = 150)
+                elif file.endswith(('.bin', '.json')):
+                    if "device" in file:
+                        print('I SEE ' + file)
+                        print('Skipping over ' + file)
+                        continue
+                    elif "params" in file:
+                        print('I SEE ' + file)
+                        print('Skipping over ' + file)
+                        continue
+                    else:
+                        print('I SEE ' + file)
+                        file_ix = list_of_dirs.index(file)
+                        file_size = file_sizes[file_ix]
+                        try:
+	@@ -321,17 +331,15 @@ def cmd_fn(out_msg, cmd_type, show_progress = False, cmd_counter = 0, to_counter
+                                                        result_resp.append(str(response['ack']))
+                                                        self.print_wrap(f"ack_event: {response}",   self.INDENT_STR, self.CONSOLE_WIDTH)
+                                                else:
+                                                    print("RESPONSE IS NOT OKAY")
+                                                    break
+                                        except:
+                                            # This is where you need to fix the alert in case there is NOT a ble issue---but maybe break explicitly
+                                            #self.console_box_.text = "Ooops. MetreAce needs to be restarted. \n Eject mouthpiece, close the phone app, and try again"
+                                            # self.py_ble_uart.peripheral = False
+                                            pass
+                                            #break
+
+                                    else:
+                                        print(str(event))
+                                        #response = json.loads(str(event))
+                                        if event['ok']:
+                                           self.print_wrap(f"event: {event}",   self.INDENT_STR, self.CONSOLE_WIDTH)
+	@@ -354,37 +362,41 @@ def cmd_fn(out_msg, cmd_type, show_progress = False, cmd_counter = 0, to_counter
+                                break
+
+                            if "{'file_path': './result.bin'}" in result_resp:
+                                print('ENTERING TRANSFER AND REMOVAL ATTEMPT')
+
+                                try:
+                                    shutil.move('./result.bin', self.base_dir + '/data_files/uploaded_files/' + file)
+                                    upload_size = os.stat(self.base_dir + '/data_files/uploaded_files/' + file)[6]
+                                    print('Sent move command')
+                                    if upload_size == file_size:
+                                        print('upload and file size are the same size')
+                                        out_msg_del =json.dumps({"cmd": "remove", "path":"/sd/" + file})
+                                        r_del, counter = cmd_fn(out_msg_del, "remove", show_progress = True, cmd_counter = counter, warning = True)      
+                                        print('Sent remove command here')
+                                    else:
+                                        print('FILE IS THE WRONG SIZE')
+                                        size_diff = file_size - upload_size
+                                        file_wrongsize.append(file)
+                                        file_wrongsize.append(size_diff)
+                                        out_msg_del =json.dumps({"cmd": "remove", "path":"/sd/" + file})
+                                        r_del, counter = cmd_fn(out_msg_del, "remove", show_progress = True, cmd_counter = counter, warning = True)
+                                    print('Got past else statement')
+
+                                    if file.endswith('bin'):
+                                        counter = counter + 1
+                                        self.progress_bar_.update_progress_bar(counter*.002)
+                                        #continue
+                                        break  #Was originally break
+                                        # No break and no continue makes it exit and not remove the bin file
+                                    elif file.endswith('json'):
+                                        pass
+
+                                except:
+                                    print('BROKE OUT OF TRANSFER AND REMOVAL ATTEMPT')
+                                    break
+                        if FLAG:
+                           counter = 0
+	@@ -396,10 +408,9 @@ def cmd_fn(out_msg, cmd_type, show_progress = False, cmd_counter = 0, to_counter
+            # Now use FileConverter
+            fc = FileConverter(self.progress_bar_, self.console_box_, file_wrongsize)
+            cwd = os.getcwd()
+            print('THIS IS THE CURRENT DIR')
+            print(cwd)
+            print('THIS IS SELF.BASEDIR')
+            print(self.base_dir)
+
+            conversion_status = fc.match_files(self.base_dir + '/data_files/uploaded_files', self.base_dir + '/data_files/processed_files', self.base_dir + '/data_files/converted_files', self.base_dir + '/data_files/unpaired_files')
+            self.console_box_.text = 'Transfer of ' + str(len(file_list)) + ' out of ' + str(len(file_list)) + ' test files complete'
+	@@ -411,22 +422,19 @@ def cmd_fn(out_msg, cmd_type, show_progress = False, cmd_counter = 0, to_counter
+                out_msg_txt =json.dumps({"cmd":"set_ble_state","active":False})
+                cmd_fn(out_msg_txt, "set_ble_state", show_progress = False, to_max = 10)
+            except:
+                print('could not send disconnect command')
+
+            #out_msg_tone =json.dumps({"cmd": "avr", "payload": { "cmd": "tone", "freq":"1000", "duration":"1000" }})
+            #cmd_fn(out_msg_tone, show_progress = False)
+
+            self.console_box_.text = 'Disconnecting from MetreAce Instrument'
+            #outmsg_s0 = json.dumps({'cmd':'avr', 'payload':{ "cmd": "sensors", "rep_ms":0, "smpl_ms":0, "n":1 }})
+            #cmd_fn(outmsg_s0, show_progress = False)
+
+            #outmsg_t0 = json.dumps({'cmd':'avr', 'payload':{ "cmd": "thermistor", "rep_ms":0, "smpl_ms":0, "n":1 }})
+            #cmd_fn(outmsg_t0, show_progress = False)
+            try:          
+                out_msg2 =json.dumps({"cmd": "disconnect_ble"})
+                rstring, no_counter = cmd_fn(out_msg2, "disconnect_ble", show_progress = True, to_max = 10)
+            except:
+                print('could not send disconnect command')
+            ConsoleAlert('Remove Mouthpiece!', self.v_)
+            ble_icon_path = 'images/ble_off.png'
+            self.ble_status_icon_.image = ui.Image.named(ble_icon_path)
