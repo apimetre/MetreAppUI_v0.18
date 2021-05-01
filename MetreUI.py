@@ -356,7 +356,7 @@ class MainView(ui.View):
                        self.results_table = self.v['results_table']
                        self.restable_inst.update_table(self.acetone, self.etime)                        
                        self.main_progress_bar.update_progress_bar(1)
-                    except:
+                   except:
                        self.app_console.text = 'The test from ' + dt + ' could not be processed.'
                        time.sleep(1)
                     shutil.move(source_path + file, self.cwd +'/data_files/processed_files/' + file)
