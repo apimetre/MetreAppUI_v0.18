@@ -284,7 +284,7 @@ class MainView(ui.View):
             if ".gitkeep" not in file:
                 files.append(file)
         if DEBUG:
-            print("these are the files in converted_files: " + files)
+            print("these are the files in converted_files: " + str(files))
         numOfFiles = len(files)
         self.app_console.alpha = 1
         if numOfFiles >1:
